@@ -11,4 +11,5 @@ scikit-learn
 imbalanced-learn
 xgboost
 tensorflow
-uvicorn
+uvicorn[standard]
+huggingface_hub

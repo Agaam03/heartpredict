@@ -1,0 +1,24 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install paket sistem yang diperlukan
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements file dan install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy semua file ke dalam container
+COPY . .
+
+# Buat direktori untuk menyimpan model
+RUN mkdir -p heart_disease_models
+
+# Port yang digunakan oleh Hugging Face Spaces
+EXPOSE 7860
+
+# Command untuk menjalankan aplikasi
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
