@@ -234,74 +234,7 @@ class StackingHeartDiseaseModel:
         
         print(f"\nVisualizations saved to {viz_dir}")
 
-    def load_saved_models(self):
-        rf_model = joblib.load(os.path.join(self.model_dir, 'rf_model.pkl'))
-        ffnn_model = tf.keras.models.load_model(os.path.join(self.model_dir, 'ffnn_model.h5'))
-        xgb_model = joblib.load(os.path.join(self.model_dir, 'xgb_model.pkl'))
-        meta_model = joblib.load(os.path.join(self.model_dir, 'meta_model.pkl'))
-        scaler = joblib.load(os.path.join(self.model_dir, 'scaler.pkl'))
-        feature_columns = joblib.load(os.path.join(self.model_dir, 'feature_columns.pkl'))
-        
-        # Load risk thresholds if available, otherwise use defaults
-        try:
-            risk_thresholds = joblib.load(os.path.join(self.model_dir, 'risk_thresholds.pkl'))
-        except:
-            risk_thresholds = self.risk_thresholds
-
-        def predict_fn(input_data, return_proba=False):
-            # Ensure input data has all required features
-            if isinstance(input_data, dict):
-                # Convert dict to DataFrame with one row
-                input_df = pd.DataFrame([input_data])
-            elif isinstance(input_data, list):
-                # Assume list of values in the same order as feature_columns
-                if len(input_data) != len(feature_columns):
-                    raise ValueError(f"Expected {len(feature_columns)} features, got {len(input_data)}")
-                input_dict = {col: val for col, val in zip(feature_columns, input_data)}
-                input_df = pd.DataFrame([input_dict])
-            else:
-                raise ValueError("Input data must be a dictionary or a list")
-            
-            # Ensure all required columns are present
-            for col in feature_columns:
-                if col not in input_df.columns:
-                    raise ValueError(f"Missing required feature: {col}")
-                    
-            # Ensure only using the required features and in the correct order
-            input_df = input_df[feature_columns]
-            
-            # Scale the input
-            input_scaled = scaler.transform(input_df)
-
-            # Get predictions from each model
-            rf_pred = rf_model.predict_proba(input_scaled)[:, 1]
-            ffnn_pred = ffnn_model.predict(input_scaled).flatten()
-            xgb_pred = xgb_model.predict_proba(input_scaled)[:, 1]
-
-            # Create stacked predictions
-            stacked_input = np.column_stack((rf_pred, ffnn_pred, xgb_pred))
-            final_pred = meta_model.predict(stacked_input)
-            final_proba = meta_model.predict_proba(stacked_input)[:, 1]
-            
-            # Determine risk level based on probability
-            if final_proba[0] < risk_thresholds['low']:
-                risk_level = "Low Risk"
-            elif final_proba[0] < risk_thresholds['medium']:
-                risk_level = "Medium Risk"
-            else:
-                risk_level = "High Risk"
-
-            if return_proba:
-                return {
-                    "prediction": int(final_pred[0]),
-                    "probability": float(final_proba[0]),
-                    "risk_level": risk_level
-                }
-            else:
-                return risk_level
-
-        return predict_fn
-
+    
 # Example usage with your data format
 if __name__ == "__main__":
     # Create an instance of the model
