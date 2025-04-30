@@ -5,11 +5,5 @@ groq
 pandas
 numpy
 joblib
-matplotlib
-seaborn
-scikit-learn
-imbalanced-learn
-xgboost
 tensorflow
 uvicorn[standard]
-huggingface_hub

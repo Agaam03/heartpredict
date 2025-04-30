@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from train_model import StackingHeartDiseaseModel
 from dotenv import load_dotenv
 from groq import Groq
 import pandas as pd
@@ -131,6 +131,14 @@ class HeartDiseasePredictor:
 # === Inisialisasi FastAPI dan model ===
 app = FastAPI()
 load_dotenv()
+# Tambahkan ini:
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 groq_api_key = os.getenv("GROQ_API_KEY")
 groq_client = Groq(api_key=groq_api_key)

@@ -8,7 +8,7 @@ myenv/
 # Env files
 .env
 backend/.env
-
+backend/heart_disease_models
 
 # VSCode
 .vscode/

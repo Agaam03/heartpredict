@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Inter, Oswald } from "next/font/google";
 import "./globals.css";
-import { Particles } from "@/components/magicui/particles";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
-const geist = Geist({
+const geist = Oswald({
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "700", "800", "900"],
+  weight: ["400", "500", "700"],
   variable: "--geist",
   style: "normal",
 });
@@ -23,8 +24,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-black" suppressHydrationWarning>
-
-      <body className={`${geist.className} `}>{children}</body>
+      <body className={`${geist.className} `}>
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

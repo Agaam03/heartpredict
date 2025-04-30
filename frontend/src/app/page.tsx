@@ -1,10 +1,14 @@
+import { GridBackground } from "@/components/GridBackground";
 import HeroSection from "@/components/HeroSection";
+
 import React from "react";
 
 const page = () => {
   return (
     <main>
-      <HeroSection />
+      <GridBackground>
+        <HeroSection />
+      </GridBackground>
     </main>
   );
 };

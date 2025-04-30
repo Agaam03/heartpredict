@@ -1,28 +1,43 @@
 import React from "react";
-import { Particles } from "../magicui/particles";
+import { GridBeam } from "../GridBeam";
+import { WordRotate } from "../magicui/word-rotate";
+import { Grab, HeartPulse } from "lucide-react";
+import Link from "next/link";
+import HeartBeam from "../HeartBeatBeam";
 
 const HeroSection = () => {
   return (
-    <section className="relative flex w-full items-center justify-center overflow-hidden h-screen">
-      <Particles
-        className="absolute inset-0 z-0"
-        quantity={100}
-        ease={80}
-        color="#ffffff"
-        refresh
-      />
-      <div className="flex flex-col items-center justify-center max-w-7xl mx-auto h-screen  text-white text-center p-4">
-        <h1 className="text-5xl font-bold mb-4">
-          Welcome to Heart Disease Prediction
+    <GridBeam className="relative flex w-full items-center justify-center overflow-hidden">
+      {/* Content Container */}
+
+      <div className="relative z-10 flex flex-col items-start justify-center max-w-7xl mx-auto text-white text-left lg:-mt-32 -mt-80">
+        <h1 className="flex items-center">
+          <HeartPulse className="text-red-500 mr-2 animate-pulse" size={28} />
+          <span className="text-red-400 font-medium tracking-wider">
+            SMART HEALTH PREDICTION
+          </span>
         </h1>
-        <p className="text-lg mb-8">
-          Predict the risk of heart disease using machine learning.
+
+        <div className="flex flex-wrap items-center lg:gap-4  md:gap-2 text-4xl md:text-8xl lg:text-9xl font-semibold uppercase mb-4 gap-[1px] ">
+          <span>Check Your</span>
+          <span className="inline-block lg:min-w-[7ch] md:min-w-[6ch] min-w-[1ch] ">
+            <WordRotate duration={5000} words={["Heart", "Health"]} />
+          </span>
+        </div>
+
+        <p className="text-lg mb-8 max-w-xl">
+          Temukan wawasan mendalam tentang kondisi kesehatan dengan cepat dan
+          akurat membuka jalan bagi masa depan medis yang lebih cerdas dan
+          berdaya.
         </p>
-        <button className="bg-white text-black  font-semibold py-2 px-4 rounded shadow hover:bg-gray-200 transition duration-300">
-          Get Started
-        </button>
+        <Link
+          href={"/predict"}
+          className="bg-white text-black font-medium py-2 px-4 rounded-md shadow hover:bg-gray-200 transition duration-300"
+        >
+          Try Predictive Analysis
+        </Link>
       </div>
-    </section>
+    </GridBeam>
   );
 };
 
