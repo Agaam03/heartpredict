@@ -1,12 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { GridBeam } from "../GridBeam";
-import { WordRotate } from "../magicui/word-rotate";
 import { HeartPulse, Activity, Zap, ChevronRight } from "lucide-react";
 import Link from "next/link";
 var ReactRotatingText = require("react-rotating-text");
-import { RotatingText } from "rotating-text";
-import "rotating-text/dist/index.css";
+
 const HeroSection = () => {
   const [isHovered, setIsHovered] = useState(false);
 
