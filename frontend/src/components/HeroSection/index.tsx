@@ -1,9 +1,9 @@
 import React from "react";
 import { GridBeam } from "../GridBeam";
 import { WordRotate } from "../magicui/word-rotate";
-import { Grab, HeartPulse } from "lucide-react";
+import { HeartPulse } from "lucide-react";
 import Link from "next/link";
-import HeartBeam from "../HeartBeatBeam";
+
 
 const HeroSection = () => {
   return (
