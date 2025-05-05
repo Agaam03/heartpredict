@@ -13,7 +13,7 @@ const Footer = () => {
           <p className="text-sm mb-2">for the connected world.</p>
           <p className="text-sm font-bold">Be Bold.</p>
           <p className="text-xs mt-8">
-            © {new Date().getFullYear()} Envoy. All Rights Reserved.
+            © {new Date().getFullYear()} Data Scientist. All Rights Reserved.
           </p>
         </div>
 
@@ -50,13 +50,13 @@ const Footer = () => {
         {/* Visit and Contact Info */}
         <div>
           <h3 className="text-sm font-medium mb-4">Visit</h3>
-          <p className="text-sm mb-1">Envoy So. California</p>
-          <p className="text-sm mb-1">34 Tesla, Ste 100</p>
-          <p className="text-sm mb-6">Irvine, CA, USA 92618</p>
+          <p className="text-sm mb-1">East Java. Indonesia</p>
+          <p className="text-sm mb-1">Universitas Muhammadiyah Lamongan</p>
+          <p className="text-sm mb-6">M. Cita Prasetya Agam</p>
 
           <h3 className="text-sm font-medium mb-2">New Business</h3>
-          <p className="text-sm mb-1">engage@wearenvoy.com</p>
-          <p className="text-sm">949.735.4092</p>
+          <p className="text-sm mb-1">agam.prasetya03@gmail.com</p>
+          <p className="text-sm">+62-8993787093</p>
         </div>
 
         {/* Follow and Legal */}
@@ -66,7 +66,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="https://instagram.com"
+                  href="https://www.linkedin.com/in/agaam/"
                   className="text-sm hover:text-gray-300"
                 >
                   Instagram
@@ -74,7 +74,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="https://twitter.com"
+                  href="https://www.linkedin.com/in/agaam/"
                   className="text-sm hover:text-gray-300"
                 >
                   Twitter
@@ -82,7 +82,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/in/agaam/"
                   className="text-sm hover:text-gray-300"
                 >
                   LinkedIn
@@ -111,7 +111,7 @@ const Footer = () => {
         {/* Next Section Indicator */}
         <div className="col-span-1 md:col-span-4 mt-4 md:mt-8 flex justify-end">
           <div className="flex flex-col items-end">
-            <p className="text-sm text-gray-400">Next: About</p>
+            <p className="text-sm text-gray-400">Creted : Agaam</p>
             <div className="w-20 h-px bg-white mt-1"></div>
           </div>
         </div>
