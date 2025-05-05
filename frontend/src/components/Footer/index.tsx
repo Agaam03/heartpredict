@@ -2,8 +2,8 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-white py-12 px-8 ">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="bg-black text-white py-12 px-8 z-50">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 z-50 ">
         {/* Company Logo and Tagline */}
         <div className="mb-8 md:mb-0">
           <h2 className="text-2xl font-bold mb-4 text-red-500">

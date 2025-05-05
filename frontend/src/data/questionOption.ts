@@ -172,7 +172,7 @@ export const sexOptions = [
     }
   ];
   
-  export const ageOptions = [
+export const ageOptions = [
     {
       label: "18-24 tahun",
       value: 1,
@@ -239,7 +239,8 @@ export const sexOptions = [
       description: "Usia sangat lanjut (80 tahun ke atas).",
     },
   ];
-  export const educationOptions = [
+
+export const educationOptions = [
     {
       label: "1 - Tidak Sekolah",
       value: 1,
@@ -272,7 +273,7 @@ export const sexOptions = [
     },
   ];
   
-  export const incomeOptions = [
+export const incomeOptions = [
     {
       label: "< $10.000",
       value: 1,

@@ -7,11 +7,10 @@ import HeartBeam from "../HeartBeatBeam";
 
 const HeroSection = () => {
   return (
-    <GridBeam className="relative flex w-full items-center justify-center overflow-hidden">
+    <GridBeam className="relative flex w-full items-center justify-center overflow-hidden ">
       {/* Content Container */}
-
-      <div className="relative z-10 flex flex-col items-start justify-center max-w-7xl mx-auto text-white text-left lg:-mt-32 -mt-80">
-        <h1 className="flex items-center">
+      <div className="relative z-10 flex flex-col items-start justify-center text-white text-left h-screen  ">
+        <h1 className="flex items-center ">
           <HeartPulse className="text-red-500 mr-2 animate-pulse" size={28} />
           <span className="text-red-400 font-medium tracking-wider">
             SMART HEALTH PREDICTION

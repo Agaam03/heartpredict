@@ -7,7 +7,7 @@ interface GridBackgroundProps {
 
 export function GridBackground({ children }: GridBackgroundProps) {
   return (
-    <div className="relative flex h-[50rem] bg-white dark:bg-black">
+    <div className="relative flex  bg-white dark:bg-black">
       <div
         className={cn(
           "absolute inset-0",

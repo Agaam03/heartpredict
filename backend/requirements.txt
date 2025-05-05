@@ -6,4 +6,10 @@ pandas
 numpy
 joblib
 tensorflow
+requests
+xgboost
+imbalanced-learn
+scikit-learn
+seaborn
+matplotlib
 uvicorn[standard]
