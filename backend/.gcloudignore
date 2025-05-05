@@ -1,0 +1,20 @@
+# Jangan upload model, cache, dan file besar
+heart_disease_models/**
+__pycache__/
+*.pyc
+*.pkl
+*.h5
+*.joblib
+*.csv
+*.npy
+
+# File dan folder umum yang tidak perlu
+.env
+.DS_Store
+.vscode/
+.idea/
+*.log
+*.swp
+node_modules/
+*.ipynb
+myenv/

@@ -1,6 +1,7 @@
 "use client";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
+import { FadeLoader } from "react-spinners";
 
 const OptionQuestion = ({
   options,
@@ -17,6 +18,7 @@ const OptionQuestion = ({
     value: number;
     description?: string;
   }>(null);
+  const [loading, setLoading] = useState(false); // default false
 
   const handleSelect = (option: (typeof options)[0]) => {
     setSelected(option);
@@ -24,7 +26,13 @@ const OptionQuestion = ({
     if (!questionsLast) {
       onAnswer(option.value); // langsung kirim kalau BUKAN pertanyaan terakhir
     }
-    console.log(option);
+  };
+
+  const handleSubmit = () => {
+    if (selected) {
+      setLoading(true);
+      onAnswer(selected.value);
+    }
   };
 
   return (
@@ -35,7 +43,7 @@ const OptionQuestion = ({
             onClick={() => setIsOpen(!isOpen)}
             className="w-full border border-pink-800 px-4 py-2 rounded bg-transparent text-left flex justify-between items-center hover:bg-pink-900 transition"
           >
-            {selected ? selected.label : "Select on option"}
+            {selected ? selected.label : "Select an option"}
             {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
 
@@ -64,16 +72,26 @@ const OptionQuestion = ({
         )}
       </div>
       {questionsLast === true && selected && (
-        <div className="relative justify-end ">
+        <div className="relative justify-end mt-6">
           <button
-            onClick={() => {
-              if (selected) {
-                onAnswer(selected.value);
-              }
-            }}
-            className="absolute right-6 lg:top-11 mt-4 border border-pink-800 rounded px-4 py-2 text-white hover:bg-pink-800 transition"
+            onClick={handleSubmit}
+            disabled={loading}
+            className="absolute right-6 lg:top-11 border border-pink-800 rounded px-3 py-2 text-white hover:bg-pink-800 transition disabled:opacity-50 flex items-center justify-center"
+            style={{ width: "130px", height: "44px" }}
           >
-            Submit
+            {loading ? (
+              <div className="mt-4 ml-5 flex items-center justify-center">
+                <FadeLoader
+                  color="#ec4899"
+                  height={7}
+                  width={2}
+                  margin={-7}
+                  loading={true}
+                />
+              </div>
+            ) : (
+              "Submit"
+            )}
           </button>
         </div>
       )}

@@ -29,7 +29,15 @@ const Navbar = () => {
     },
     hover: { scale: 1.5, rotate: 180, transition: { duration: 0.3 } },
   };
-
+  const backToHome = () => {
+    if (
+      localStorage.getItem("heartResult") !== null ||
+      localStorage.getItem("heartAnswers") !== null
+    ) {
+      localStorage.removeItem("heartResult");
+      localStorage.removeItem("heartAnswers");
+    }
+  };
   return (
     <section className="sticky top-0 w-full bg-transparent backdrop-blur-xl z-50 border-b-[0.2px] border-b-gray-600 shadow-md">
       <main className="max-w-7xl mx-auto">
@@ -43,6 +51,7 @@ const Navbar = () => {
           >
             <Link
               href={"/"}
+              onClick={backToHome}
               className=" text-black text-xl font-extrabold border-blue px-3 py-[0.4px] rounded-xs flex items-center bg-[#fb2c36]"
             >
               {/* Animated letters */}
