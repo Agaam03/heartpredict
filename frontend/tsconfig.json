@@ -33,7 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/lib/storage.ts"
+    "src/lib/local-storage.ts"
   ],
   "exclude": [
     "node_modules"

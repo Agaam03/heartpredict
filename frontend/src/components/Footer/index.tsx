@@ -111,8 +111,8 @@ const Footer = () => {
         {/* Next Section Indicator */}
         <div className="col-span-1 md:col-span-4 mt-4 md:mt-8 flex justify-end">
           <div className="flex flex-col items-end">
-            <p className="text-sm text-gray-400">Creted : Agaam</p>
-            <div className="w-20 h-px bg-white mt-1"></div>
+            <p className="text-sm text-gray-400">Created : Agaam</p>
+            <div className="w-[82px] h-px bg-white mt-1"></div>
           </div>
         </div>
       </div>

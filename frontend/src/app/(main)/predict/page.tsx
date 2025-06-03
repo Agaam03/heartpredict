@@ -1,4 +1,3 @@
-"use client";
 import { GridBackground } from "@/components/GridBackground";
 import React from "react";
 import MultiStepQuestions from "./MultiStepQuestions";

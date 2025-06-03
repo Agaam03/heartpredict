@@ -8,7 +8,7 @@ import {
   questions,
   sexOptions,
 } from "@/data/questionOption";
-import { getFromLocalStorage, saveToLocalStorage } from "@/lib/storage";
+import { getFromLocalStorage, saveToLocalStorage } from "@/lib/local-storage";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
@@ -69,7 +69,7 @@ const MultiStepQuestions = () => {
       saveToLocalStorage("heartAnswers", updated);
       console.log(updated);
       const response = await fetch(
-        "https://heart-disease-service-297544367066.asia-southeast2.run.app/predict",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/predict`,
         {
           method: "POST",
           headers: {

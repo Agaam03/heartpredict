@@ -19,7 +19,7 @@ export function GridBackground({ children }: GridBackgroundProps) {
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
 
       {/* Konten tidak lagi dipusatkan */}
-      <section className="w-full max-w-7xl mx-auto px-6 z-10">
+      <section className="w-full max-w-7xl mx-auto md:px-6 z-10">
         {children}
       </section>
     </div>
