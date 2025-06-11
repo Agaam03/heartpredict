@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Inter, Oswald } from "next/font/google";
+import { Oswald, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
-const geist = Oswald({
+const geist = Space_Grotesk({
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "700"],
@@ -19,16 +17,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  // This is the root layout for the application.
   return (
     <html lang="en" className="bg-black" suppressHydrationWarning>
-      <body className={`${geist.className} `}>
-        <Navbar />
-        {children}
-        <Footer />
-      </body>
+      <body className={`${geist.className}`}>{children}</body>
     </html>
   );
 }
