@@ -18,6 +18,7 @@ import Logo from "@/components/Logo";
 
 const LoginForm = () => {
   const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "An account with this email already exists. Please sign in with your existing account."
@@ -42,7 +43,7 @@ const LoginForm = () => {
     setSuccess("");
 
     startTransition(() => {
-      login(values).then((response: any) => {
+      login(values, callbackUrl).then((response: any) => {
         if (response?.error) {
           form.reset();
           setError(response.error);
@@ -69,7 +70,7 @@ const LoginForm = () => {
 
   const handleSocialSignUp = (provider: string) => {
     signIn(provider, {
-      callbackUrl: DEFAULT_LOGIN_REDIRECT,
+      callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });
   };
 
