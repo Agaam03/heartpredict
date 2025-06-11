@@ -12,19 +12,23 @@ interface MarkdownWithSyntaxHighlightingProps {
 
 const MarkdownWithSyntaxHighlighting: React.FC<
   MarkdownWithSyntaxHighlightingProps
-> = ({ content }) => {
+> = ({ content }: { content: string }) => {
   return (
-    <div className="prose prose-pink max-w-none text-white/80 tracking-wide">
+    <div className="prose prose-pink max-w-none text-white/80 tracking-wide text-sm   lg:text-base">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
           ol({ children }) {
             return (
-              <ol className="list-decimal pl-6 text-pink-500">{children}</ol>
+              <ol className="list-decimal pl-6 text-pink-500 ">{children}</ol>
             );
           },
           ul({ children }) {
-            return <ul className="list-disc pl-6 text-white/80">{children}</ul>;
+            return (
+              <ul className="list-disc pl-6 text-white/80 text-sm">
+                {children}
+              </ul>
+            );
           },
           code({
             inline,

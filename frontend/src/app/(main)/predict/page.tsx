@@ -3,11 +3,7 @@ import React from "react";
 import MultiStepQuestions from "./MultiStepQuestions";
 
 const Page = () => {
-  return (
-    <GridBackground>
-      <MultiStepQuestions />
-    </GridBackground>
-  );
+  return <MultiStepQuestions />;
 };
 
 export default Page;

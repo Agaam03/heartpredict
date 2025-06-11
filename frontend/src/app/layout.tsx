@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Oswald } from "next/font/google";
+import { Oswald, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-const geist = Oswald({
+const geist = Space_Grotesk({
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "700"],

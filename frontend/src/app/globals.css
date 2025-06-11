@@ -28,14 +28,14 @@
 
 /* Thumb (bagian yang bisa digeser) */
 ::-webkit-scrollbar-thumb {
-  background: #e6007e; /* warna thumb pink gelap */
+  background: #8a0e0e; /* warna thumb pink gelap */
   border-radius: 8px;
   border: 2px solid #111; /* memberi efek outline */
 }
 
 /* Hover efek untuk thumb */
 ::-webkit-scrollbar-thumb:hover {
-  background: #ff3399;
+  background: #9e2762;
 }
 .react-rotating-text-cursor {
   animation: blinking-cursor 0.8s cubic-bezier(0.68, 0.01, 0.01, 0.99) 0s infinite;

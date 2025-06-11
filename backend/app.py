@@ -102,16 +102,16 @@ class HeartDiseasePredictor:
         input_scaled = self.scaler.transform(input_df)
 
         # Get predictions from each model
-        rf_pred = self.rf_model.predict_proba(input_scaled)[:, 1]
-        ffnn_pred = self.ffnn_model.predict(input_scaled).flatten()
-        xgb_pred = self.xgb_model.predict_proba(input_scaled)[:, 1]
+        rf_pred = self.rf_model.predict_proba(input_scaled)[:, 1]      # Prob kelas 1
+        ffnn_pred = self.ffnn_model.predict(input_scaled).flatten()    # Prob kelas 1
+        xgb_pred = self.xgb_model.predict_proba(input_scaled)[:, 1]    # Prob kelas 1
 
         # Create stacked predictions
         stacked_input = np.column_stack((rf_pred, ffnn_pred, xgb_pred))
         final_pred = self.meta_model.predict(stacked_input)
         final_proba = self.meta_model.predict_proba(stacked_input)[:, 1]
-        
-        # Determine risk level based on probability
+
+        # Risk level classification
         if final_proba[0] < self.risk_thresholds['low']:
             risk_level = "Low Risk"
         elif final_proba[0] < self.risk_thresholds['medium']:
@@ -123,10 +123,17 @@ class HeartDiseasePredictor:
             return {
                 "prediction": int(final_pred[0]),
                 "probability": float(final_proba[0]),
-                "risk_level": risk_level
+                "confidence": float(final_proba[0]) if final_pred[0] == 1 else float(1 - final_proba[0]),
+                "risk_level": risk_level,
+                "model_probabilities": {
+                    "random_forest": float(rf_pred[0]),
+                    "ffnn": float(ffnn_pred[0]),
+                    "xgboost": float(xgb_pred[0])
+                }
             }
         else:
             return risk_level
+
 
 # === Inisialisasi FastAPI dan model ===
 app = FastAPI()
@@ -136,7 +143,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://heart-predict.vercel.app"
+        "https://heartpredict.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
