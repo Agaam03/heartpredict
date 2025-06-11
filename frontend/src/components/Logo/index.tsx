@@ -33,8 +33,8 @@ const Logo = () => {
       localStorage.getItem("heartResult") !== null ||
       localStorage.getItem("heartAnswers") !== null
     ) {
-      // localStorage.removeItem("heartResult");
-      // localStorage.removeItem("heartAnswers");
+      localStorage.removeItem("heartResult");
+      localStorage.removeItem("heartAnswers");
     }
   };
   return (
