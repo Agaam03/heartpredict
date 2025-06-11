@@ -12,7 +12,7 @@ import { LoginSchema } from "@/schemas";
 import { AuthError } from "next-auth";
 import { z } from "zod";
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
+export const login = async (values: z.infer<typeof LoginSchema>, callbackUrl? : string | null ) => {
     const validatedValues = LoginSchema.safeParse(values);
     if (!validatedValues.success) {
         return {error: "Invalid input"}
@@ -69,7 +69,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       await signIn("credentials", {
         email,
         password,
-        redirectTo: DEFAULT_LOGIN_REDIRECT,
+        redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
       });
     } catch (error) {
         if (error instanceof AuthError) {
