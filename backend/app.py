@@ -143,7 +143,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://heartpredict-two.vercel.app/"
+        "https://heartpredict-two.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
