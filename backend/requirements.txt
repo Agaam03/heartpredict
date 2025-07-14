@@ -1,6 +1,7 @@
 fastapi[all]
 pydantic
 python-dotenv
+pymongo
 groq
 pandas
 numpy
@@ -11,5 +12,6 @@ xgboost
 imbalanced-learn
 scikit-learn
 seaborn
+XlsxWriter
 matplotlib
 uvicorn[standard]

@@ -1,4 +1,6 @@
 import { db } from "@/lib/db"
+import { PredictionById } from "@/types/prediction";
+import { t } from "framer-motion/dist/types.d-DDSxwf0n";
 
 export const getUserByEmail = async (email: string) => {
     try {
@@ -31,5 +33,18 @@ export const getUserAccountByUserId = async (userId: string) => {
         
     } catch {
       return null;   
+    }
+}
+
+export const getUserPredictions = async (userId : string) => {
+    try {
+        const predictions = await db.predictionResult.findMany({
+            where: { userId },
+        })
+        return predictions;
+    
+    } catch (error) {
+        console.error("Error fetching user predictions:", error);
+        return [];
     }
 }

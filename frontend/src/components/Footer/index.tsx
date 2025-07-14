@@ -44,33 +44,33 @@ const Footer = () => {
                 </div>
               </div>
 
-              <div className="space-y-2 max-w-md">
-                <p className="text-lg text-gray-300">We create possibilities</p>
-                <p className="text-lg text-gray-300">
-                  for the connected world.
+              <div className="space-y-2 max-w-sm">
+                <p className="text-md text-gray-300 text-justify">
+                  "This tool empowers patients to be proactive about their heart
+                  health. As a physician, I appreciate how it bridges technology
+                  with real medical insight."
                 </p>
-                <p className="text-xl font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
-                  Be Bold.
-                </p>
+                <cite className="text-pink-400 text-xs mt-4 block">
+                  - Dr. Emily Carter, Cardiologist
+                </cite>
               </div>
             </div>
 
             {/* CTA Section */}
             <div className="text-center lg:text-right space-y-4">
-              <p className="text-gray-300 text-lg">
+              <p className="text-gray-300 text-md">
                 Ready to predict your health?
               </p>
               <SpotlightButton
-                main="Try Analysis"
+                main="Download Dataset"
                 styleDefault={false}
+                download
                 customStyles={{
                   button:
-                    "relative w-full max-w-40 overflow-hidden rounded-sm px-2 py-2 text-lg font-medium text-white cursor-pointer bg-gradient-to-br from-pink-500/10 to-pink-600/10 border border-pink-500/20 backdrop-blur-sm hover:border-pink-400/40 duration-700",
+                    "relative w-full overflow-hidden rounded-sm px-2 py-2 text-lg font-medium text-white cursor-pointer bg-gradient-to-br from-pink-500/10 to-pink-600/10 border border-pink-500/20 backdrop-blur-sm hover:border-pink-400/40 duration-700",
                   text: "pointer-events-none relative z-10 mix-blend-difference cursor-pointer flex flex-row items-center text-sm justify-center gap-2 text-pink-500",
-                  spotlight:
-                    "pointer-events-none absolute left-[50%] top-[50%] h-10 w-10 -translate-x-[50%] -translate-y-[50%] rounded-full bg-fuchsia-800/10",
+                  spotlight: "bg-transparent",
                 }}
-                href="/predict"
               />
             </div>
           </div>
@@ -86,10 +86,10 @@ const Footer = () => {
             <ul className="space-y-3">
               {[
                 { name: "Home", href: "/" },
-                { name: "About", href: "/about" },
-                { name: "Capabilities", href: "/capabilities" },
-                { name: "Careers", href: "/careers" },
-                { name: "Research", href: "/research" },
+                { name: "Dashbooard", href: "/dashboard" },
+                { name: "Prediction History", href: "/dashboard?tab=history" },
+                { name: "Chat AI Doctor", href: "/dashboard?tab=chatbot" },
+                { name: "Model Comparison", href: "/dashboard?tab=comparison" },
               ].map((link, index) => (
                 <li key={index}>
                   <a
@@ -193,7 +193,11 @@ const Footer = () => {
                   },
                   { icon: Twitter, href: "#", color: "hover:text-sky-400" },
                   { icon: Instagram, href: "#", color: "hover:text-pink-400" },
-                  { icon: Github, href: "#", color: "hover:text-gray-400" },
+                  {
+                    icon: Github,
+                    href: "https://github.com/Agaam03",
+                    color: "hover:text-gray-400",
+                  },
                 ].map((social, index) => (
                   <a
                     key={index}

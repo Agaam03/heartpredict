@@ -5,5 +5,7 @@ export const authRoutes = ["/login", "/register",'/error','/reset','/new-passwor
 export const protectedRoutes = [
     "/dashboard","/predict","/result"
 ]
+export const predictRoutes = [
+    "/predict", "/result"]
 export const apiAuthPrefix = "/api/auth"
 export const DEFAULT_LOGIN_REDIRECT = "/dashboard"

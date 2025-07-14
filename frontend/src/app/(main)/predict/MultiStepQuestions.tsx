@@ -10,7 +10,7 @@ import {
 } from "@/data/questionOption";
 import { getFromLocalStorage, saveToLocalStorage } from "@/lib/local-storage";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import {
   ArrowRight,
   ArrowLeft,
@@ -24,8 +24,13 @@ import {
   Stethoscope,
 } from "lucide-react";
 import OptionQuestion from "./OptionQuestion";
+import { savePrediction } from "@/actions/save-prediction-result";
+import { normalizeInput } from "@/lib/input-data-user";
+import { PredictionById } from "@/types/prediction";
+import { fetchPredictionResults } from "@/actions/fetch-prediction-result";
 
 const MultiStepQuestions = () => {
+  const [isPending, startTransition] = useTransition();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const [berat, setBerat] = useState("");
@@ -134,34 +139,63 @@ const MultiStepQuestions = () => {
     }
   };
 
-  const submitAnswers = async (value: number) => {
-    try {
-      const key = questions[currentStep].id;
-      const updated = { ...answers, [key]: value };
-      setAnswers(updated);
-      saveToLocalStorage("heartAnswers", updated);
-      console.log(updated);
+  const submitAnswers = async (value: number, prediction?: PredictionById) => {
+    const key = questions[currentStep].id;
+    const updated = { ...answers, [key]: value };
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/predict`,
-        // `${process.env.NEXT_PUBLIC_BACKEND_DEV}/predict`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updated),
+    setAnswers(updated);
+    saveToLocalStorage("heartAnswers", updated);
+    console.log("Updated input:", updated);
+
+    startTransition(async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_DEV}/predict`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updated),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Gagal prediksi: " + response.statusText);
         }
-      );
 
-      const result = await response.json();
-      console.log("Hasil prediksi:", result);
-      localStorage.setItem("heartResult", JSON.stringify(result));
-      localStorage.removeItem("heartAnswers");
-      router.push("/result");
-    } catch (error) {
-      console.error("Gagal mengirim ke backend:", error);
-    }
+        const result = await response.json();
+        console.log("Hasil prediksi:", result);
+
+        localStorage.setItem("heartResult", JSON.stringify(result));
+
+        const payloadToSave = {
+          prediction: result.prediction,
+          predictionLabel: result.prediction_label,
+          probability: result.probability,
+          confidence: result.confidence,
+          riskLevel: result.risk_level,
+          advice: result.advice,
+          modelProbabilities: result.model_probabilities,
+          inputData: normalizeInput(updated),
+        };
+
+        await savePrediction(payloadToSave);
+
+        const rawData = await fetchPredictionResults();
+        const data: PredictionById[] = rawData.map((item: any) => ({
+          ...item,
+          patientName:
+            typeof item.patientName === "string"
+              ? item.patientName
+              : item.patientName?.name || "",
+        }));
+        console.log(data);
+        router.push(`/result/${data[0].id}`);
+        localStorage.removeItem("heartResult");
+        localStorage.removeItem("heartAnswers");
+      } catch (error) {
+        console.error("Gagal mengirim atau menyimpan:", error);
+      }
+    });
   };
 
   return (
