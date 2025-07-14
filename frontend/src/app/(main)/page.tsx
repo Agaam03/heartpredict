@@ -1,4 +1,3 @@
-import { GridBackground } from "@/components/GridBackground";
 import HeroSection from "@/components/LandingPage";
 import HealthFeaturesSection from "@/components/LandingPage/HealthFeaturesSection";
 

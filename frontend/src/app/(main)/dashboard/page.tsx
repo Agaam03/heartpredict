@@ -3,29 +3,15 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   Heart,
   Activity,
-  TrendingUp,
-  Users,
-  Calendar,
   FileText,
   Settings,
   LogOut,
-  Plus,
-  Search,
-  Filter,
-  Download,
   AlertTriangle,
   CheckCircle,
   XCircle,
   BarChart3,
   PieChart,
-  Brain,
-  TreePine,
   MessageCircle,
-  Send,
-  Bot,
-  User,
-  Layers,
-  Zap,
 } from "lucide-react";
 import { logout } from "@/actions/logout";
 import { OverviewTab } from "./OverviewTab";
@@ -33,88 +19,121 @@ import { PredictionHistoryTab } from "./PredictionHistoryTab";
 import { ModelComparisonTab } from "./ModelComparisonTab";
 import { ChatbotTab } from "./ChatBotTab";
 import { useCurrentUser } from "@/hooks/user-current-session";
+import { fetchPredictionResults } from "@/actions/fetch-prediction-result";
+import { Prediction } from "@/types/prediction";
+import { useSearchParams } from "next/navigation";
+import {
+  deleteUserAccountWithBackup,
+  getUserDataStats,
+} from "@/actions/delete-account";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 const Dashboard = () => {
   const user = useCurrentUser();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("overview");
-  type Prediction = {
-    id: number;
-    patientName: string;
-    age: number;
-    gender: string;
-    date: string;
-    time: string;
-    rfPrediction: string;
-    nnPrediction: string;
-    stackingPrediction: string;
-    rfConfidence: number;
-    nnConfidence: number;
-    stackingConfidence: number;
-    finalResult: string;
-    status: string;
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
+  const [confirmText, setConfirmText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  type UserStats = {
+    user: {
+      name: string | null;
+      email: string | null;
+      isTwoFactorEnabled: boolean;
+    } | null;
+    predictions: number;
+    aiChats: number;
+    connectedAccounts: number;
+    totalDataPoints: number;
   };
 
-  const [predictions, setPredictions] = useState<Prediction[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
 
-  // Sample data - replace with actual API calls
   useEffect(() => {
-    const samplePredictions = [
-      {
-        id: 1,
-        patientName: "Ahmad Santoso",
-        age: 45,
-        gender: "Laki-laki",
-        date: "2025-06-05",
-        time: "14:30",
-        rfPrediction: "Berisiko Tinggi",
-        nnPrediction: "Berisiko Tinggi",
-        stackingPrediction: "Berisiko Tinggi",
-        rfConfidence: 0.87,
-        nnConfidence: 0.92,
-        stackingConfidence: 0.94,
-        finalResult: "Berisiko Tinggi",
-        status: "reviewed",
-      },
-      {
-        id: 2,
-        patientName: "Siti Rahmawati",
-        age: 52,
-        gender: "Perempuan",
-        date: "2025-06-04",
-        time: "09:15",
-        rfPrediction: "Berisiko Rendah",
-        nnPrediction: "Berisiko Sedang",
-        stackingPrediction: "Berisiko Sedang",
-        rfConfidence: 0.73,
-        nnConfidence: 0.68,
-        stackingConfidence: 0.78,
-        finalResult: "Berisiko Sedang",
-        status: "pending",
-      },
-      {
-        id: 3,
-        patientName: "Budi Hartono",
-        age: 38,
-        gender: "Laki-laki",
-        date: "2025-06-03",
-        time: "16:45",
-        rfPrediction: "Berisiko Rendah",
-        nnPrediction: "Berisiko Rendah",
-        stackingPrediction: "Berisiko Rendah",
-        rfConfidence: 0.89,
-        nnConfidence: 0.85,
-        stackingConfidence: 0.91,
-        finalResult: "Berisiko Rendah",
-        status: "reviewed",
-      },
-    ];
-    setPredictions(samplePredictions);
+    const getData = async () => {
+      const rawData = await fetchPredictionResults();
+      const data: Prediction[] = rawData.map((item: any) => ({
+        ...item,
+        patientName:
+          typeof item.patientName === "string"
+            ? item.patientName
+            : item.patientName?.name || "",
+      }));
+      setPredictions(data);
+    };
+    getData();
   }, []);
+
+  // Load user data statistics when component mounts
+  useEffect(() => {
+    const loadUserStats = async () => {
+      if (user?.id) {
+        setIsLoadingStats(true);
+        try {
+          const result = await getUserDataStats(user?.id);
+          if (result.success) {
+            setUserStats(result.data ?? null);
+          }
+        } catch (error) {
+          console.error("Error loading user stats:", error);
+        } finally {
+          setIsLoadingStats(false);
+        }
+      }
+    };
+
+    loadUserStats();
+  }, [user?.id]);
 
   const onClick = () => {
     logout();
+  };
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
+  // Handler function for delete account
+  const handleDeleteAccount = async () => {
+    if (confirmText !== "DELETE ACCOUNT" || !user?.id) return;
+
+    setIsDeleting(true);
+
+    try {
+      await deleteUserAccountWithBackup();
+      logout(); // Logout setelah delete
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      alert("Terjadi kesalahan saat menghapus akun. Silakan coba lagi.");
+    } finally {
+      setIsDeleting(false);
+      setConfirmText("");
+    }
+  };
+
+  const stats = {
+    totalPredictions: predictions.length,
+    highRisk: predictions.filter((p) => p.finalResult === "Berisiko Tinggi")
+      .length,
+    mediumRisk: predictions.filter((p) => p.finalResult === "Berisiko Sedang")
+      .length,
+    lowRisk: predictions.filter((p) => p.finalResult === "Berisiko Rendah")
+      .length,
+    accuracy: 94.8,
   };
 
   const getStatusColor = (status: string) => {
@@ -141,26 +160,6 @@ const Dashboard = () => {
       default:
         return <Activity className="w-4 h-4" />;
     }
-  };
-
-  const filteredPredictions = predictions.filter((prediction) => {
-    const matchesSearch = prediction.patientName
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesFilter =
-      filterStatus === "all" || prediction.status === filterStatus;
-    return matchesSearch && matchesFilter;
-  });
-
-  const stats = {
-    totalPredictions: predictions.length,
-    highRisk: predictions.filter((p) => p.finalResult === "Berisiko Tinggi")
-      .length,
-    mediumRisk: predictions.filter((p) => p.finalResult === "Berisiko Sedang")
-      .length,
-    lowRisk: predictions.filter((p) => p.finalResult === "Berisiko Rendah")
-      .length,
-    accuracy: 94.8,
   };
 
   return (
@@ -251,11 +250,8 @@ const Dashboard = () => {
         {activeTab === "history" && (
           <PredictionHistoryTab
             predictions={predictions}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            filterStatus={filterStatus}
-            setFilterStatus={setFilterStatus}
             getStatusColor={getStatusColor}
+            getStatusIcon={getStatusIcon}
           />
         )}
         {activeTab === "comparison" && (
@@ -274,70 +270,332 @@ const Dashboard = () => {
           />
         )}
         {activeTab === "settings" && (
-          <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Pengaturan Sistem
+          <div className="bg-gradient-to-br from-red-500/5 to-red-600/10 border border-red-500/20 rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <svg
+                className="w-5 h-5 mr-2 text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
+              </svg>
+              Hapus Akun
             </h3>
+
             <div className="space-y-6">
-              <div>
-                <h4 className="text-white font-medium mb-2">
-                  Model Configuration
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 p-4 rounded-lg">
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Random Forest Trees
-                    </label>
-                    <input
-                      type="number"
-                      defaultValue="100"
-                      className="w-full px-3 py-2 bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 text-white rounded-lg focus:ring-2 focus:ring-blue-500"
+              {/* Warning Section */}
+              <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-lg">
+                <div className="flex items-start">
+                  <svg
+                    className="w-6 h-6 text-red-400 mr-3 mt-0.5 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
-                  </div>
-                  <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 p-4 rounded-lg">
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Neural Network Layers
-                    </label>
-                    <input
-                      type="number"
-                      defaultValue="3"
-                      className="w-full px-3 py-2 bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20  text-white rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
+                  </svg>
+                  <div>
+                    <h4 className="text-red-400 font-semibold mb-2">
+                      Peringatan Penting
+                    </h4>
+                    <p className="text-gray-300 text-sm leading-relaxed">
+                      Tindakan ini tidak dapat dibatalkan. Menghapus akun akan
+                      menghilangkan semua data Anda secara permanen.
+                    </p>
                   </div>
                 </div>
               </div>
 
+              {/* Data yang akan dihapus */}
               <div>
-                <h4 className="text-white font-medium mb-2">
-                  Notification Settings
+                <h4 className="text-white font-medium mb-3">
+                  Data yang akan dihapus:
                 </h4>
-                <div className="space-y-3">
-                  <label className="flex items-center">
-                    <input type="checkbox" className="mr-2" defaultChecked />
-                    <span className="text-gray-300">
-                      Email alerts for high-risk predictions
-                    </span>
-                  </label>
-                  <label className="flex items-center">
-                    <input type="checkbox" className="mr-2" defaultChecked />
-                    <span className="text-gray-300">Daily summary reports</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input type="checkbox" className="mr-2" />
-                    <span className="text-gray-300">
-                      Model performance notifications
-                    </span>
-                  </label>
-                </div>
+
+                {userStats ? (
+                  <div className="space-y-3">
+                    <div className="bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/20 p-3 rounded-lg">
+                      <div className="flex items-center justify-between text-gray-300">
+                        <div className="flex items-center">
+                          <svg
+                            className="w-4 h-4 mr-2 text-red-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                            />
+                          </svg>
+                          Informasi profil dan akun
+                        </div>
+                        <span className="text-red-400 font-medium">1 akun</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/20 p-3 rounded-lg">
+                      <div className="flex items-center justify-between text-gray-300">
+                        <div className="flex items-center">
+                          <svg
+                            className="w-4 h-4 mr-2 text-red-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                            />
+                          </svg>
+                          Hasil prediksi
+                        </div>
+                        <span className="text-red-400 font-medium">
+                          {userStats.predictions} prediksi
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/20 p-3 rounded-lg">
+                      <div className="flex items-center justify-between text-gray-300">
+                        <div className="flex items-center">
+                          <svg
+                            className="w-4 h-4 mr-2 text-red-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                            />
+                          </svg>
+                          Riwayat chat AI
+                        </div>
+                        <span className="text-red-400 font-medium">
+                          {userStats.aiChats} pesan
+                        </span>
+                      </div>
+                    </div>
+
+                    {userStats.connectedAccounts > 0 && (
+                      <div className="bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/20 p-3 rounded-lg">
+                        <div className="flex items-center justify-between text-gray-300">
+                          <div className="flex items-center">
+                            <svg
+                              className="w-4 h-4 mr-2 text-red-400"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                              />
+                            </svg>
+                            Akun terhubung (OAuth)
+                          </div>
+                          <span className="text-red-400 font-medium">
+                            {userStats.connectedAccounts} akun
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="bg-gradient-to-br from-red-500/20 to-red-600/20 border border-red-500/30 p-3 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <span className="text-red-400 font-semibold">
+                          Total data yang akan dihapus:
+                        </span>
+                        <span className="text-red-400 font-bold text-lg">
+                          {userStats.totalDataPoints} item
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <div className="flex items-center text-gray-300">
+                      <svg
+                        className="w-4 h-4 mr-2 text-red-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      Informasi profil dan akun
+                    </div>
+                    <div className="flex items-center text-gray-300">
+                      <svg
+                        className="w-4 h-4 mr-2 text-red-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      Semua hasil prediksi
+                    </div>
+                    <div className="flex items-center text-gray-300">
+                      <svg
+                        className="w-4 h-4 mr-2 text-red-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      Riwayat chat AI
+                    </div>
+                    <div className="flex items-center text-gray-300">
+                      <svg
+                        className="w-4 h-4 mr-2 text-red-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      Akun terhubung dan preferensi
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div className="flex space-x-4">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
-                  Simpan Pengaturan
-                </button>
-                <button className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-colors">
-                  Reset ke Default
-                </button>
+              {/* Konfirmasi */}
+              <div>
+                <label className="block text-white font-medium mb-2">
+                  Konfirmasi penghapusan akun
+                </label>
+                <p className="text-gray-300 text-sm mb-3">
+                  Ketik "DELETE ACCOUNT" untuk mengonfirmasi bahwa Anda ingin
+                  menghapus akun secara permanen.
+                </p>
+                <input
+                  type="text"
+                  placeholder="DELETE ACCOUNT"
+                  className="w-full px-4 py-3 bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/20 text-white rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
+                  value={confirmText}
+                  onChange={(e) => setConfirmText(e.target.value)}
+                />
+              </div>
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <button
+                      disabled={confirmText !== "DELETE ACCOUNT" || isDeleting}
+                      className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all cursor-pointer ${
+                        confirmText === "DELETE ACCOUNT" && !isDeleting
+                          ? "bg-red-600/50 hover:bg-red-700 text-white"
+                          : "bg-gray-800 text-gray-400 cursor-not-allowed"
+                      }`}
+                    >
+                      {isDeleting ? (
+                        <div className="flex items-center justify-center">
+                          <svg
+                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Menghapus Akun...
+                        </div>
+                      ) : (
+                        "Delete Account"
+                      )}
+                    </button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="bg-black text-white border border-red-600 rounded-lg shadow-lg">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Apakah Anda yakin ingin menghapus akun?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Anda akan menghapus {userStats?.totalDataPoints || 0}{" "}
+                        item data secara permanen. Tindakan ini tidak dapat
+                        dibatalkan.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="bg-red-500/20 cursor-pointer hover:bg-red-500/30 text-red-400 font-medium px-4 py-2 rounded-lg transition-all">
+                        Batal
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDeleteAccount}
+                        disabled={isDeleting}
+                        className=" text-white font-medium px-4 py-2 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        {isDeleting ? "Menghapus..." : "Lanjutkan"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+
+              {/* Additional Info */}
+              <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 p-4 rounded-lg">
+                <h4 className="text-blue-400 font-medium mb-2">
+                  Alternatif Lain
+                </h4>
+                <p className="text-gray-300 text-sm">
+                  Jika Anda hanya ingin berhenti menggunakan layanan untuk
+                  sementara, Anda dapat logout dari akun tanpa menghapusnya.
+                </p>
               </div>
             </div>
           </div>

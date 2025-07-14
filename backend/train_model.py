@@ -4,6 +4,7 @@ import os
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
+import csv
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -18,6 +19,7 @@ from xgboost import XGBClassifier
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
+
 
 class StackingHeartDiseaseModel:
     def __init__(self, model_dir='heart_disease_models'):
@@ -35,6 +37,105 @@ class StackingHeartDiseaseModel:
             'low': 0.1,     # Probability < 0.3 -> Low risk
             'medium': 0.5   # 0.3 <= Probability < 0.7 -> Medium risk, >= 0.7 -> High risk
         }
+
+    def evaluate_and_visualize(self, name, y_true, y_prob):
+        y_pred = (y_prob >= 0.5).astype(int)
+        cm = confusion_matrix(y_true, y_pred)
+        acc = accuracy_score(y_true, y_pred)
+        prec = precision_score(y_true, y_pred, zero_division=0)
+        rec = recall_score(y_true, y_pred, zero_division=0)
+        f1 = f1_score(y_true, y_pred, zero_division=0)
+        fpr, tpr, _ = roc_curve(y_true, y_prob)
+        roc_auc_val = auc(fpr, tpr)
+        avg_prec = average_precision_score(y_true, y_prob)
+
+        print(f"\n===== {name} Model Evaluation =====")
+        print(f"Accuracy: {acc:.4f} | Precision: {prec:.4f} | Recall: {rec:.4f} | F1: {f1:.4f} | AUC: {roc_auc_val:.4f}")
+
+        viz_path = os.path.join(self.model_dir, "visualizations", name)
+        os.makedirs(viz_path, exist_ok=True)
+
+        # Save confusion matrix
+        plt.figure(figsize=(6, 4))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+        plt.title(f'{name} - Confusion Matrix')
+        plt.xlabel('Predicted')
+        plt.ylabel('Actual')
+        plt.tight_layout()
+        plt.savefig(os.path.join(viz_path, 'confusion_matrix.png'))
+        plt.close()
+
+        # Save ROC Curve
+        plt.figure(figsize=(6, 4))
+        plt.plot(fpr, tpr, label=f'AUC = {roc_auc_val:.2f}')
+        plt.plot([0, 1], [0, 1], 'k--')
+        plt.title(f'{name} - ROC Curve')
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(os.path.join(viz_path, 'roc_curve.png'))
+        plt.close()
+
+        # Save Precision-Recall Curve
+        precision, recall, _ = precision_recall_curve(y_true, y_prob)
+        plt.figure(figsize=(6, 4))
+        plt.plot(recall, precision, label=f'AP = {avg_prec:.2f}')
+        plt.title(f'{name} - Precision-Recall Curve')
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(os.path.join(viz_path, 'precision_recall_curve.png'))
+        plt.close()
+
+        # Save metrics bar chart
+        plt.figure(figsize=(6, 4))
+        metrics = [acc, prec, rec, f1, roc_auc_val]
+        labels = ['Accuracy', 'Precision', 'Recall', 'F1', 'AUC']
+        sns.barplot(x=labels, y=metrics, palette='pastel')
+        for i, v in enumerate(metrics):
+            plt.text(i, v + 0.01, f"{v:.2f}", ha='center')
+        plt.ylim(0, 1.1)
+        plt.title(f'{name} - Metrics')
+        plt.tight_layout()
+        plt.savefig(os.path.join(viz_path, 'metrics_bar.png'))
+        plt.close()
+
+        # Save metrics to CSV
+        csv_path = os.path.join(self.model_dir, "visualizations", "evaluation_metrics.csv")
+        file_exists = os.path.isfile(csv_path)
+        with open(csv_path, mode='a', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            if not file_exists:
+                writer.writerow(["Model", "Accuracy", "Precision", "Recall", "F1 Score", "AUC"])
+            writer.writerow([name, acc, prec, rec, f1, roc_auc_val])
+            
+        # === Prepare Data for Excel ===
+        metrics_dict = {
+            "Model": name,
+            "Accuracy": acc,
+            "Precision": prec,
+            "Recall": rec,
+            "F1 Score": f1,
+            "AUC": roc_auc_val
+        }
+        metrics_df = pd.DataFrame([metrics_dict]).round(2)
+
+        cm_df = pd.DataFrame(cm, columns=["Predicted_0", "Predicted_1"], index=["Actual_0", "Actual_1"])
+
+        # === Save to Excel ===
+        excel_path = os.path.join(viz_path, f"{name}_evaluation.xlsx")
+        with pd.ExcelWriter(excel_path, engine='xlsxwriter') as writer:
+            metrics_df.to_excel(writer, index=False, sheet_name='Metrics')
+            cm_df.to_excel(writer, sheet_name='ConfusionMatrix')
+
+        return {
+            "accuracy": acc, "precision": prec, "recall": rec,
+            "f1_score": f1, "auc": roc_auc_val
+        }
+
+
 
     def train_and_save_models(self, data_path, visualize=True):
         # Load data
@@ -74,6 +175,7 @@ class StackingHeartDiseaseModel:
         rf_model = RandomForestClassifier(random_state=42)
         rf_model.fit(X_train_resampled, y_train_resampled)
         rf_preds = rf_model.predict_proba(X_test_scaled)[:, 1]
+        rf_metrics = self.evaluate_and_visualize("RandomForest", y_test, rf_preds)
 
         print("Training Neural Network model...")
         # Train Neural Network model
@@ -86,12 +188,14 @@ class StackingHeartDiseaseModel:
         ffnn_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
         ffnn_model.fit(X_train_resampled, y_train_resampled, epochs=50, batch_size=16, verbose=1)
         ffnn_preds = ffnn_model.predict(X_test_scaled).flatten()
+        ffnn_metrics = self.evaluate_and_visualize("FFNN", y_test, ffnn_preds)
 
         print("Training XGBoost model...")
         # Train XGBoost model
         xgb_model = XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
         xgb_model.fit(X_train_resampled, y_train_resampled)
         xgb_preds = xgb_model.predict_proba(X_test_scaled)[:, 1]
+        xgb_metrics = self.evaluate_and_visualize("XGBoost", y_test, xgb_preds)
 
         # Combine predictions for meta-model
         stacked_preds = np.column_stack((rf_preds, ffnn_preds, xgb_preds))
@@ -113,127 +217,19 @@ class StackingHeartDiseaseModel:
 
         print("Models saved successfully!")
         
-        # Get final predictions and probabilities
         final_probs = meta_model.predict_proba(stacked_preds)[:, 1]
-        final_preds = meta_model.predict(stacked_preds)
-        
-        # Evaluate the stacked model
-        print("\nModel Evaluation:")
-        print(f"Accuracy: {accuracy_score(y_test, final_preds):.4f}")
-        print(f"Precision: {precision_score(y_test, final_preds, zero_division=0):.4f}")
-        print(f"Recall: {recall_score(y_test, final_preds, zero_division=0):.4f}")
-        print(f"F1 Score: {f1_score(y_test, final_preds, zero_division=0):.4f}")
-        
-        # Calculate AUC
-        fpr, tpr, _ = roc_curve(y_test, final_probs)
-        roc_auc = auc(fpr, tpr)
-        print(f"AUC: {roc_auc:.4f}")
-        
-        print("\nClassification Report:")
-        print(classification_report(y_test, final_preds))
-        
-        # Create confusion matrix
-        cm = confusion_matrix(y_test, final_preds)
-        
-        if visualize:
-            self._visualize_metrics(y_test, final_preds, final_probs, cm)
-        
-        # Save evaluation metrics
-        eval_metrics = {
-            'accuracy': accuracy_score(y_test, final_preds),
-            'precision': precision_score(y_test, final_preds, zero_division=0),
-            'recall': recall_score(y_test, final_preds, zero_division=0),
-            'f1_score': f1_score(y_test, final_preds, zero_division=0),
-            'auc': roc_auc,
-            'confusion_matrix': cm.tolist()
+        stacked_metrics = self.evaluate_and_visualize("Stacking", y_test, final_probs)
+
+        all_metrics = {
+            "RandomForest": rf_metrics,
+            "FFNN": ffnn_metrics,
+            "XGBoost": xgb_metrics,
+            "Stacking": stacked_metrics
         }
-        joblib.dump(eval_metrics, os.path.join(self.model_dir, 'evaluation_metrics.pkl'))
-        
-        # Return the prediction function for immediate use
+        joblib.dump(all_metrics, os.path.join(self.model_dir, 'all_models_metrics.pkl'))
+
         return self.load_saved_models()
     
-    def _visualize_metrics(self, y_test, y_pred, y_prob, cm):
-        """Visualize various model performance metrics"""
-        # Create a directory for visualizations
-        viz_dir = os.path.join(self.model_dir, 'visualizations')
-        os.makedirs(viz_dir, exist_ok=True)
-        
-        # Set figure aesthetics
-        plt.style.use('seaborn-v0_8-darkgrid')
-        
-        # 1. Confusion Matrix
-        plt.figure(figsize=(8, 6))
-        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', cbar=False)
-        plt.title('Confusion Matrix', fontsize=16)
-        plt.ylabel('True Label', fontsize=12)
-        plt.xlabel('Predicted Label', fontsize=12)
-        plt.tight_layout()
-        plt.savefig(os.path.join(viz_dir, 'confusion_matrix.png'), dpi=300)
-        plt.close()
-        
-        # 2. ROC Curve
-        plt.figure(figsize=(8, 6))
-        fpr, tpr, _ = roc_curve(y_test, y_prob)
-        roc_auc = auc(fpr, tpr)
-        plt.plot(fpr, tpr, color='darkorange', lw=2, 
-                 label=f'ROC curve (area = {roc_auc:.2f})')
-        plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
-        plt.xlabel('False Positive Rate', fontsize=12)
-        plt.ylabel('True Positive Rate', fontsize=12)
-        plt.title('Receiver Operating Characteristic (ROC) Curve', fontsize=16)
-        plt.legend(loc="lower right")
-        plt.tight_layout()
-        plt.savefig(os.path.join(viz_dir, 'roc_curve.png'), dpi=300)
-        plt.close()
-        
-        # 3. Precision-Recall Curve
-        plt.figure(figsize=(8, 6))
-        precision, recall, _ = precision_recall_curve(y_test, y_prob)
-        avg_precision = average_precision_score(y_test, y_prob)
-        plt.plot(recall, precision, color='blue', lw=2, 
-                 label=f'Precision-Recall curve (AP = {avg_precision:.2f})')
-        plt.axhline(y=sum(y_test)/len(y_test), color='red', linestyle='--', 
-                    label=f'Baseline (y_freq = {sum(y_test)/len(y_test):.2f})')
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
-        plt.xlabel('Recall', fontsize=12)
-        plt.ylabel('Precision', fontsize=12)
-        plt.title('Precision-Recall Curve', fontsize=16)
-        plt.legend(loc="best")
-        plt.tight_layout()
-        plt.savefig(os.path.join(viz_dir, 'precision_recall_curve.png'), dpi=300)
-        plt.close()
-        
-        # 4. Model Metrics Bar Chart
-        metrics = ['Accuracy', 'Precision', 'Recall', 'F1 Score', 'AUC']
-        values = [
-            accuracy_score(y_test, y_pred),
-            precision_score(y_test, y_pred, zero_division=0),
-            recall_score(y_test, y_pred, zero_division=0),
-            f1_score(y_test, y_pred, zero_division=0),
-            roc_auc
-        ]
-        
-        plt.figure(figsize=(10, 6))
-        bars = plt.bar(metrics, values, color='steelblue')
-        plt.ylim(0, 1.05)
-        plt.ylabel('Score', fontsize=12)
-        plt.title('Model Performance Metrics', fontsize=16)
-        
-        # Add value labels on top of bars
-        for bar in bars:
-            height = bar.get_height()
-            plt.text(bar.get_x() + bar.get_width()/2., height + 0.01,
-                    f'{height:.2f}', ha='center', va='bottom', fontsize=10)
-        
-        plt.tight_layout()
-        plt.savefig(os.path.join(viz_dir, 'model_metrics.png'), dpi=300)
-        plt.close()
-        
-        print(f"\nVisualizations saved to {viz_dir}")
-
     
 # Example usage with your data format
 if __name__ == "__main__":

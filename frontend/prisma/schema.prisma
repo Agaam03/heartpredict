@@ -23,6 +23,8 @@ model User {
   accounts              Account[]
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
+  PredictionResult      PredictionResult[]
+  AIChat                AIChat[]
 
   @@map("users")
 }
@@ -80,4 +82,35 @@ model TwoFactorConfirmation {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
+}
+
+model PredictionResult {
+  id     String @id @default(cuid()) @map("_id")
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  prediction         Int
+  predictionLabel    String
+  probability        Float
+  confidence         Float
+  riskLevel          String
+  advice             String
+  modelProbabilities Json // { rf: 0.1, ffnn: 0.2, xgb: 0.6 }
+
+  inputData Json // Menyimpan semua fitur seperti BMI, HighBP, Diabetes, dsb
+
+  aiChats   AIChat[]
+  createdAt DateTime @default(now())
+}
+
+model AIChat {
+  id                 String    @id @default(cuid()) @map("_id")
+  userId             String
+  predictionResultId String?
+  userMessage        String
+  aiResponse         String
+  timestamp          DateTime? @default(now())
+
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  PredictionResult PredictionResult? @relation(fields: [predictionResultId], references: [id], onDelete: Cascade)
 }

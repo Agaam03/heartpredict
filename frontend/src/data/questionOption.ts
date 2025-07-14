@@ -69,7 +69,7 @@ export const questions = [
     {
       id: "GenHlth",
       question:
-        "Bagaimana Anda menilai kondisi kesehatan Anda secara umum? (1 = Sangat Baik, 5 = Sangat Buruk)",
+        "Bagaimana Anda menilai kondisi kesehatan Anda secara umum? ",
       type: "genHlth",
     },
     {
@@ -91,24 +91,24 @@ export const questions = [
     },
     {
       id: "Sex",
-      question: "Apa jenis kelamin Anda? (1 = Laki-laki, 0 = Perempuan)",
+      question: "Apa jenis kelamin Anda? ",
       type: "sex"
     },
     {
       id: "Age",
-      question: "Berapa usia Anda? (dalam rentang: 1-13, sesuai dataset)",
+      question: "Berapa usia Anda? ",
       type: "age",
     },
     {
       id: "Education",
       question:
-        "Apa tingkat pendidikan terakhir Anda? (1 = Tidak Sekolah, 6 = Lulus Perguruan Tinggi)",
+        "Apa tingkat pendidikan terakhir Anda? ",
       type: "education"
     },
     {
       id: "Income",
       question:
-        "Berapa tingkat pendapatan Anda? (1 = sangat rendah, 8 = sangat tinggi)",
+        "Berapa tingkat pendapatan Anda? ",
       type: "income"
     }
   ];

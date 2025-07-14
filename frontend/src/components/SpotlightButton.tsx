@@ -8,6 +8,7 @@ import { useEffect, useRef } from "react";
 interface SpotlightButtonProps {
   main: string;
   styleDefault?: boolean;
+  download?: boolean;
   customStyles?: {
     button?: string;
     text?: string;
@@ -22,6 +23,7 @@ const SpotlightButton = ({
   main,
   styleDefault = true,
   customStyles,
+  download = false,
   onClick,
   href = "/predict",
   icon = <ExternalLink size={18} />, // Default icon
@@ -58,6 +60,13 @@ const SpotlightButton = ({
   const handleClick = () => {
     if (onClick) {
       onClick();
+    } else if (download) {
+      const a = document.createElement("a");
+      a.href = process.env.NEXT_PUBLIC_DOWNLOAD_DATASET_URL || "";
+      a.download = "heart-dataset-by-kirollosashraf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } else {
       router.push(href);
     }

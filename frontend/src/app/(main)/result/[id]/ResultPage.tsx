@@ -23,42 +23,36 @@ import {
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { fetchPredictionResultsById } from "@/actions/fetch-prediction-result";
+import { PredictionById } from "@/types/prediction";
+import Link from "next/link";
+import DownloadButton from "./DownloadButton";
 
-// Result Card Component
-interface Result {
-  prediction: number;
-  probability: number;
-  confidence: number;
-  risk_level: string;
-  model_probabilities: {
-    random_forest: number;
-    ffnn: number;
-    xgboost: number;
-  };
-  prediction_label: string;
-  advice: string;
-}
-
-const ResultPage = () => {
-  const [result, setResult] = useState<Result | null>(null);
+const ResultPage = ({ id }: { id: string }) => {
+  if (!id) return null;
+  const [result, setResult] = useState<PredictionById | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const stored = localStorage.getItem("heartResult");
-    if (stored) {
+    // 2. Ambil dari server (jika ada) dan update hasilnya
+    const getData = async () => {
       try {
-        const parsed: Result = JSON.parse(stored);
-        setResult(parsed);
+        const data = await fetchPredictionResultsById(id);
+        if (data) {
+          setResult(data);
+        }
       } catch (error) {
-        console.error("Gagal parsing heartResult:", error);
+        console.error("Error fetching result from server:", error);
+        router.push("/");
       }
-    } else {
-      router.push("/");
-    }
-  }, []);
+    };
 
+    getData();
+  }, [id, router]);
+
+  console.log(result);
   const mainProbability = result
-    ? (result.probability * 100).toFixed(1)
+    ? (result.stackingPrediction * 100).toFixed(1)
     : "0.0";
   const confidenceScore = result ? (result.confidence * 100).toFixed(1) : "0.0";
 
@@ -220,7 +214,8 @@ const ResultPage = () => {
                   <p className="text-gray-400 text-xs sm:text-sm my-2 sm:my-4">
                     Confidence menunjukkan tingkat keyakinan sistem terhadap
                     hasil prediksi akhir berdasarkan gabungan tiga model. Makin
-                    tinggi nilainya, makin konsisten dan stabil hasil model.
+                    tinggi nilainya, makin stabil dan sejalan hasil prediksi
+                    ketiga model.
                   </p>
                   <div className="bg-slate-600 rounded-full h-2">
                     <div
@@ -259,10 +254,10 @@ const ResultPage = () => {
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
-                    <div className="text-xl sm:text-2xl font-bold text-white">
+                    <div className="text-xl sm:text-md font-bold text-white">
                       {mainProbability}%
                     </div>
-                    <div className="text-xs text-gray-400">Probability</div>
+                    <div className="text-[10px] text-gray-400">Probability</div>
                   </div>
                 </div>
               </div>
@@ -399,10 +394,9 @@ const ResultPage = () => {
                 button:
                   "relative w-full lg:max-w-43 max-w-34 overflow-hidden rounded-sm lg:p-2 p-1 font-medium text-white cursor-pointer text-sm bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 hover:border-blue-600 duration-700",
                 text: "pointer-events-none relative z-10 mix-blend-difference cursor-pointer flex flex-row items-center lg:text-sm text-xs justify-center gap-2 text-white",
-                spotlight:
-                  "pointer-events-none absolute left-[50%] top-[50%] h-10 w-10 -translate-x-[50%] -translate-y-[50%] rounded-full bg-transparent",
+                spotlight: "bg-transparent",
               }}
-              href="/dashboard"
+              href={`/dashboard?tab=chatbot&id=${id}`}
               icon={<Bot className="w-5 h-5" />}
             />
           </div>
@@ -417,22 +411,22 @@ const ResultPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="flex flex-wrap gap-4 justify-center"
+          className="flex flex-wrap gap-4 justify-center w-full "
         >
-          <button className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/25">
-            <Download className="w-5 h-5" />
-            Download Report
-          </button>
+          <DownloadButton result={result} />
 
-          <button className="flex items-center gap-2 bg-slate-700/50 hover:bg-slate-600/50 border border-slate-600/50 hover:border-slate-500/50 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300">
+          {/* <button className="flex items-center gap-2 bg-slate-700/50 hover:bg-slate-600/50 border border-slate-600/50 hover:border-slate-500/50 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300">
             <Share2 className="w-5 h-5" />
             Share Results
-          </button>
+          </button> */}
 
-          <button className="flex items-center gap-2 bg-slate-700/50 hover:bg-slate-600/50 border border-slate-600/50 hover:border-slate-500/50 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300">
+          <Link
+            href={"/predict"}
+            className="flex items-center gap-2 bg-slate-700/50 hover:bg-slate-600/50 border border-slate-600/50 hover:border-slate-500/50 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 xl:w-64 w-full justify-center"
+          >
             <Activity className="w-5 h-5" />
             New Assessment
-          </button>
+          </Link>
         </motion.div>
 
         {/* Disclaimer */}

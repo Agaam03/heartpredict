@@ -24,21 +24,21 @@ export const ModelComparisonTab = ({ stats }: ModelComparisonTabProps) => {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-gray-400">Akurasi</span>
-              <span className="font-semibold text-white">92.5%</span>
+              <span className="font-semibold text-white">90%</span>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
               <div
                 className="bg-green-500 h-2 rounded-full"
-                style={{ width: "92.5%" }}
+                style={{ width: "90%" }}
               ></div>
             </div>
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-green-400">95.2%</p>
+                <p className="text-2xl font-bold text-green-400">40%</p>
                 <p className="text-sm text-gray-400">Precision</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-green-400">89.8%</p>
+                <p className="text-2xl font-bold text-green-400">23%</p>
                 <p className="text-sm text-gray-400">Recall</p>
               </div>
             </div>
@@ -56,21 +56,21 @@ export const ModelComparisonTab = ({ stats }: ModelComparisonTabProps) => {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-gray-400">Akurasi</span>
-              <span className="font-semibold text-white">93.8%</span>
+              <span className="font-semibold text-white">78%</span>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
               <div
                 className="bg-purple-500 h-2 rounded-full"
-                style={{ width: "93.8%" }}
+                style={{ width: "78%" }}
               ></div>
             </div>
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-purple-400">93.1%</p>
+                <p className="text-2xl font-bold text-purple-400">25%</p>
                 <p className="text-sm text-gray-400">Precision</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-purple-400">94.5%</p>
+                <p className="text-2xl font-bold text-purple-400">71%</p>
                 <p className="text-sm text-gray-400">Recall</p>
               </div>
             </div>
@@ -88,21 +88,21 @@ export const ModelComparisonTab = ({ stats }: ModelComparisonTabProps) => {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-gray-400">Akurasi</span>
-              <span className="font-semibold text-white">93.5%</span>
+              <span className="font-semibold text-white">91%</span>
             </div>
             <div className="w-full bg-gray-700 rounded-full h-2">
               <div
                 className="bg-orange-500 h-2 rounded-full"
-                style={{ width: "93.5%" }}
+                style={{ width: "91%" }}
               ></div>
             </div>
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-orange-400">94.7%</p>
+                <p className="text-2xl font-bold text-orange-400">52%</p>
                 <p className="text-sm text-gray-400">Precision</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-orange-400">92.1%</p>
+                <p className="text-2xl font-bold text-orange-400">14%</p>
                 <p className="text-sm text-gray-400">Recall</p>
               </div>
             </div>
@@ -123,21 +123,21 @@ export const ModelComparisonTab = ({ stats }: ModelComparisonTabProps) => {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <span className="text-gray-400">Akurasi</span>
-            <span className="font-semibold text-white">94.8%</span>
+            <span className="font-semibold text-white">91%</span>
           </div>
           <div className="w-full bg-gray-700 rounded-full h-2">
             <div
               className="bg-blue-500 h-2 rounded-full"
-              style={{ width: "94.8%" }}
+              style={{ width: "91%" }}
             ></div>
           </div>
           <div className="grid grid-cols-2 gap-4 mt-4">
             <div className="text-center">
-              <p className="text-2xl font-bold text-blue-400">96.3%</p>
+              <p className="text-2xl font-bold text-blue-400">54%</p>
               <p className="text-sm text-gray-400">Precision</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-blue-400">93.2%</p>
+              <p className="text-2xl font-bold text-blue-400">13%</p>
               <p className="text-sm text-gray-400">Recall</p>
             </div>
           </div>
