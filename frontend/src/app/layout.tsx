@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Oswald, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geist = Space_Grotesk({
   subsets: ["latin"],
@@ -31,9 +32,6 @@ export const metadata: Metadata = {
   robots: "index, follow",
   applicationName: "Heart Disease Risk Predictor",
   generator: "Next.js",
-  themeColor: "#000000",
-  colorScheme: "dark",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   openGraph: {
     title: "Heart Disease Risk Prediction",
     description:
@@ -45,6 +43,14 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#000000",
+  colorScheme: "dark",
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -52,7 +58,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="bg-black" suppressHydrationWarning>
-      <body className={`${geist.className}`}>{children}</body>
+      <body className={`${geist.className}`}>
+        {children}
+        <SpeedInsights />
+      </body>
     </html>
   );
 }

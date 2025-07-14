@@ -13,23 +13,23 @@ import requests
 from datetime import datetime
 
 # === Fungsi download model dari Hugging Face ===
-def download_model_from_huggingface(filename, model_dir):
-    os.makedirs(model_dir, exist_ok=True)
-    file_path = os.path.join(model_dir, filename)
+# def download_model_from_huggingface(filename, model_dir):
+#     os.makedirs(model_dir, exist_ok=True)
+#     file_path = os.path.join(model_dir, filename)
     
-    # URL for raw file download from Hugging Face
-    url = f"https://huggingface.co/Agaam/heart-disease/resolve/main/heart_disease_models/{filename}"
+#     # URL for raw file download from Hugging Face
+#     url = f"https://huggingface.co/Agaam/heart-disease/resolve/main/heart_disease_models/{filename}"
     
-    print(f"📥 Downloading {filename}...")
-    response = requests.get(url)
-    if response.status_code == 200:
-        with open(file_path, "wb") as f:
-            f.write(response.content)
-        print(f"✅ Successfully downloaded {filename}")
-        return True
-    else:
-        print(f"❌ Failed to download {filename}. Status code: {response.status_code}")
-        return False
+#     print(f"📥 Downloading {filename}...")
+#     response = requests.get(url)
+#     if response.status_code == 200:
+#         with open(file_path, "wb") as f:
+#             f.write(response.content)
+#         print(f"✅ Successfully downloaded {filename}")
+#         return True
+#     else:
+#         print(f"❌ Failed to download {filename}. Status code: {response.status_code}")
+#         return False
 
 class HeartDiseasePredictor:
     def __init__(self, model_dir="heart_disease_models"):
@@ -56,10 +56,10 @@ class HeartDiseasePredictor:
                 missing_files.append(filename)
         
         # Download missing files
-        if missing_files:
-            print(f"Missing model files: {missing_files}")
-            for filename in missing_files:
-                download_model_from_huggingface(filename, self.model_dir)
+        # if missing_files:
+        #     print(f"Missing model files: {missing_files}")
+        #     for filename in missing_files:
+        #         download_model_from_huggingface(filename, self.model_dir)
         
         # Load models after downloading
         try:
