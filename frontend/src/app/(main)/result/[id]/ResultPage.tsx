@@ -14,8 +14,6 @@ import {
   TrendingUp,
   Shield,
   Info,
-  Download,
-  Share2,
   Calendar,
   Bot,
   Network,
