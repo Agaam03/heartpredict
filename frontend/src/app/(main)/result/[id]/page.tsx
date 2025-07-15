@@ -1,7 +1,8 @@
 import ResultPage from "./ResultPage";
 
-const Page = async ({ params }: { params: { id: string } }) => {
-  return <ResultPage id={params.id} />;
+const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
+  return <ResultPage id={id} />;
 };
 
 export default Page;
