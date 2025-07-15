@@ -13,3 +13,4 @@ EXPOSE 8080
 # Gunakan ENV agar bisa mengikuti port yang diberikan Cloud Run
 CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT:-8080}"]
 
+
