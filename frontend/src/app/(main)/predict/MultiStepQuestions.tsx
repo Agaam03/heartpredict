@@ -150,7 +150,7 @@ const MultiStepQuestions = () => {
     startTransition(async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_DEV}/predict`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/predict`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
