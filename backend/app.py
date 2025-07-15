@@ -159,7 +159,7 @@ groq_client = Groq(api_key=groq_api_key)
 # Inisialisasi MongoDB Atlas
 MONGO_URI = os.getenv("MONGO_URI")
 client = MongoClient(MONGO_URI)
-db = client["heart-disease-local"]
+db = client["heart-disease"]
 prediction_collection = db["PredictionResult"]
 chat_collection = db["AIChat"]
 

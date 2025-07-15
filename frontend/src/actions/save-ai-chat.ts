@@ -10,7 +10,7 @@ export async function getAndSaveAiChat(predictionResultId: string, userMessage: 
   if (!userId) throw new Error("Unauthorized");
 
   // Panggil backend Python untuk dapatkan AI response
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DEV}/chat`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ predictionResultId, userMessage }),
