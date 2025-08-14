@@ -1,14 +1,6 @@
 "use client";
-import {
-  Heart,
-  Activity,
-  TrendingUp,
-  FileText,
-  BarChart3,
-  Plus,
-  Download,
-} from "lucide-react";
-import Link from "next/link";
+import { Heart, Activity, TrendingUp, FileText } from "lucide-react";
+import { ClipLoader } from "react-spinners";
 
 interface OverviewTabProps {
   predictions: {
@@ -30,15 +22,27 @@ export const OverviewTab = ({
   getStatusIcon,
 }: OverviewTabProps) => {
   const stats = {
-    totalPredictions: predictions.length,
-    highRisk: predictions.filter((p) => p.finalResult === "Berisiko Tinggi")
-      .length,
-    mediumRisk: predictions.filter((p) => p.finalResult === "Berisiko Sedang")
-      .length,
-    lowRisk: predictions.filter((p) => p.finalResult === "Berisiko Rendah")
-      .length,
+    totalPredictions: predictions?.length || 0,
+    highRisk:
+      predictions?.filter((p) => p.finalResult === "Berisiko Tinggi").length ||
+      0,
+    mediumRisk:
+      predictions?.filter((p) => p.finalResult === "Berisiko Sedang").length ||
+      0,
+    lowRisk:
+      predictions?.filter((p) => p.finalResult === "Berisiko Rendah").length ||
+      0,
     accuracy: 94.8,
   };
+
+  // kondisi loading
+  if (!predictions || predictions.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ClipLoader color="#3B82F6" size={35} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 h-screen">
@@ -98,36 +102,6 @@ export const OverviewTab = ({
           </div>
         </div>
       </div>
-
-      {/* Quick Actions */}
-      {/* <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-xl shadow-lg p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Aksi Cepat</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link
-            href={"/predict"}
-            className="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg transition-colors"
-          >
-            <Plus className="w-5 h-5" />
-            <span>Prediksi Baru</span>
-          </Link>
-          <button
-            disabled
-            className="flex items-center justify-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-lg transition-colors cursor-not-allowed"
-            title="Fitur ini akan datang segera"
-          >
-            <Download className="w-5 h-5" />
-            <span>Export Data</span>
-          </button>
-          <button
-            disabled
-            title="Fitur ini akan datang segera"
-            className="flex items-center justify-center space-x-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 cursor-not-allowed rounded-lg transition-colors"
-          >
-            <BarChart3 className="w-5 h-5" />
-            <span>Lihat Analisis</span>
-          </button>
-        </div>
-      </div> */}
 
       {/* Recent Predictions */}
       <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-xl shadow-lg p-6">

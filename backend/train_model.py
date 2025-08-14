@@ -137,48 +137,40 @@ class StackingHeartDiseaseModel:
 
 
 
-    def train_and_save_models(self, data_path, visualize=True):
-        # Load data
-        if data_path.endswith('.csv'):
-            df = pd.read_csv(data_path)
-        else:
-            # If the data is provided as a string with comma-separated values
-            rows = data_path.strip().split('\n')
-            header = rows[0].split(',')
-            data = [row.split(',') for row in rows[1:]]
-            df = pd.DataFrame(data, columns=header)
-            df = df.apply(pd.to_numeric, errors='ignore')  # Convert all possible values to numeric
+    def train_and_save_models(self, visualize=True):
+        # Load train and test data
+        train_df = pd.read_csv('heart_train.csv', delimiter=';')
+        test_df = pd.read_csv('heart_test.csv', delimiter=';')
+        
+        train_df.columns = train_df.columns.str.strip()
+        test_df.columns = test_df.columns.str.strip()
 
-        # Ensure all features are present
         for col in [self.target_column] + self.feature_columns:
-            if col not in df.columns:
+            if col not in train_df.columns:
                 raise ValueError(f"Missing required column: {col}")
 
-        # Prepare features and target
-        X = df[self.feature_columns]
-        y = df[self.target_column]
+        # Split features and labels
+        X_train = train_df[self.feature_columns]
+        y_train = train_df[self.target_column]
+        X_test = test_df[self.feature_columns]
+        y_test = test_df[self.target_column]
 
-        # Split the data
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-        # Scale the features
+        # Standarisasi fitur
         scaler = StandardScaler()
         X_train_scaled = scaler.fit_transform(X_train)
         X_test_scaled = scaler.transform(X_test)
 
-        # Handle class imbalance using SMOTE
+        # SMOTE untuk penyeimbangan data latih
         smote = SMOTE(random_state=42)
         X_train_resampled, y_train_resampled = smote.fit_resample(X_train_scaled, y_train)
 
         print("Training Random Forest model...")
-        # Train Random Forest model
         rf_model = RandomForestClassifier(random_state=42)
         rf_model.fit(X_train_resampled, y_train_resampled)
         rf_preds = rf_model.predict_proba(X_test_scaled)[:, 1]
         rf_metrics = self.evaluate_and_visualize("RandomForest", y_test, rf_preds)
 
         print("Training Neural Network model...")
-        # Train Neural Network model
         input_layer = tf.keras.layers.Input(shape=(X_train_resampled.shape[1],))
         hidden1 = Dense(32, activation='relu')(input_layer)
         hidden2 = Dense(16, activation='relu')(hidden1)
@@ -191,21 +183,18 @@ class StackingHeartDiseaseModel:
         ffnn_metrics = self.evaluate_and_visualize("FFNN", y_test, ffnn_preds)
 
         print("Training XGBoost model...")
-        # Train XGBoost model
         xgb_model = XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
         xgb_model.fit(X_train_resampled, y_train_resampled)
         xgb_preds = xgb_model.predict_proba(X_test_scaled)[:, 1]
         xgb_metrics = self.evaluate_and_visualize("XGBoost", y_test, xgb_preds)
 
-        # Combine predictions for meta-model
+        # Stacking predictions
         stacked_preds = np.column_stack((rf_preds, ffnn_preds, xgb_preds))
 
-        print("Training meta-model...")
-        # Train meta-model
+        print("Training meta-model (Logistic Regression)...")
         meta_model = LogisticRegression()
         meta_model.fit(stacked_preds, y_test)
 
-        # Save all models
         print("Saving models...")
         joblib.dump(rf_model, os.path.join(self.model_dir, 'rf_model.pkl'))
         ffnn_model.save(os.path.join(self.model_dir, 'ffnn_model.h5'))
@@ -216,7 +205,7 @@ class StackingHeartDiseaseModel:
         joblib.dump(self.risk_thresholds, os.path.join(self.model_dir, 'risk_thresholds.pkl'))
 
         print("Models saved successfully!")
-        
+
         final_probs = meta_model.predict_proba(stacked_preds)[:, 1]
         stacked_metrics = self.evaluate_and_visualize("Stacking", y_test, final_probs)
 
@@ -229,114 +218,62 @@ class StackingHeartDiseaseModel:
         joblib.dump(all_metrics, os.path.join(self.model_dir, 'all_models_metrics.pkl'))
 
         return self.load_saved_models()
+
     
-    
-# Example usage with your data format
 if __name__ == "__main__":
-    # Create an instance of the model
     stacking_model = StackingHeartDiseaseModel()
-    
-    # Option 1: If you have a CSV file with your data
-    data_path = 'heart_new.csv'
-    
-    # Check if file exists
-    if not os.path.exists(data_path):
-        print(f"Warning: The file '{data_path}' was not found. Generating synthetic data for demonstration.")
-        
-        # Generate synthetic data for demonstration
-        header = ["HeartDiseaseorAttack"] + stacking_model.feature_columns
-        
-        # Create a DataFrame with 1000 rows
-        np.random.seed(42)  # For reproducibility
-        synthetic_data = []
-        
-        for _ in range(1000):
-            row = {
-                'HeartDiseaseorAttack': np.random.choice([0, 1], p=[0.7, 0.3]),  # 30% with heart disease
-                'HighBP': np.random.choice([0, 1]),
-                'HighChol': np.random.choice([0, 1]),
-                'CholCheck': np.random.choice([0, 1]),
-                'BMI': np.random.uniform(18, 45),
-                'Smoker': np.random.choice([0, 1]),
-                'Stroke': np.random.choice([0, 1], p=[0.9, 0.1]),
-                'Diabetes': np.random.choice([0, 1], p=[0.85, 0.15]),
-                'PhysActivity': np.random.choice([0, 1]),
-                'Fruits': np.random.choice([0, 1]),
-                'Veggies': np.random.choice([0, 1]),
-                'HvyAlcoholConsump': np.random.choice([0, 1], p=[0.8, 0.2]),
-                'AnyHealthcare': np.random.choice([0, 1], p=[0.1, 0.9]),
-                'NoDocbcCost': np.random.choice([0, 1], p=[0.8, 0.2]),
-                'GenHlth': np.random.randint(1, 6),
-                'MentHlth': np.random.randint(0, 31),
-                'PhysHlth': np.random.randint(0, 31),
-                'DiffWalk': np.random.choice([0, 1]),
-                'Sex': np.random.choice([0, 1]),
-                'Age': np.random.randint(1, 14),
-                'Education': np.random.randint(1, 7),
-                'Income': np.random.randint(1, 9)
-            }
-            synthetic_data.append(row)
-        
-        synthetic_df = pd.DataFrame(synthetic_data)
-        
-        # Save to CSV
-        data_path = 'synthetic_heart_data.csv'
-        synthetic_df.to_csv(data_path, index=False)
-        print(f"Synthetic data saved to {data_path}")
-    
-    # Train and evaluate the model
-    try:
-        print("Starting model training...")
-        predict_fn = stacking_model.train_and_save_models(data_path, visualize=True)
-        print("Training completed successfully!")
-        
-        # Example of using the prediction function
-        sample_input = {
-            'HighBP': 1,
-            'HighChol': 1,
-            'CholCheck': 1,
-            'BMI': 40,
-            'Smoker': 1,
-            'Stroke': 0,
-            'Diabetes': 0,
-            'PhysActivity': 0,
-            'Fruits': 0,
-            'Veggies': 1,
-            'HvyAlcoholConsump': 0,
-            'AnyHealthcare': 1,
-            'NoDocbcCost': 0,
-            'GenHlth': 5,
-            'MentHlth': 18,
-            'PhysHlth': 15,
-            'DiffWalk': 1,
-            'Sex': 0,
-            'Age': 9,
-            'Education': 4,
-            'Income': 3
-        }
-        
-        # Make a prediction with risk level
-        result = predict_fn(sample_input, return_proba=True)
-        print("\nSample Input Prediction Results:")
-        print(f"Binary Prediction: {result['prediction']} (0=No Disease, 1=Disease)")
-        print(f"Probability: {result['probability']:.4f}")
-        print(f"Risk Level: {result['risk_level']}")
-        
-        # Show model performance from saved metrics
+
+    # Pastikan file heart_train.csv dan heart_test.csv tersedia
+    if not os.path.exists("heart_train.csv") or not os.path.exists("heart_test.csv"):
+        print("❌ File 'heart_train.csv' atau 'heart_test.csv' tidak ditemukan.")
+    else:
         try:
-            metrics = joblib.load(os.path.join(stacking_model.model_dir, 'evaluation_metrics.pkl'))
-            print("\nSummary of Model Performance:")
-            print(f"Accuracy: {metrics['accuracy']:.4f}")
-            print(f"Precision: {metrics['precision']:.4f}")
-            print(f"Recall: {metrics['recall']:.4f}")
-            print(f"F1 Score: {metrics['f1_score']:.4f}")
-            print(f"AUC: {metrics['auc']:.4f}")
-            print(f"\nVisualizations are saved in: {os.path.join(stacking_model.model_dir, 'visualizations')}")
-            
+            print("🚀 Mulai pelatihan model dengan dataset yang sudah dipisah (train/test)...")
+            predict_fn = stacking_model.train_and_save_models(visualize=True)
+            print("✅ Pelatihan model selesai!")
+
+            # Contoh prediksi 1 data
+            sample_input = {
+                'HighBP': 1,
+                'HighChol': 1,
+                'CholCheck': 1,
+                'BMI': 40,
+                'Smoker': 1,
+                'Stroke': 0,
+                'Diabetes': 0,
+                'PhysActivity': 0,
+                'Fruits': 0,
+                'Veggies': 1,
+                'HvyAlcoholConsump': 0,
+                'AnyHealthcare': 1,
+                'NoDocbcCost': 0,
+                'GenHlth': 5,
+                'MentHlth': 18,
+                'PhysHlth': 15,
+                'DiffWalk': 1,
+                'Sex': 0,
+                'Age': 9,
+                'Education': 4,
+                'Income': 3
+            }
+
+            result = predict_fn(sample_input, return_proba=True)
+            print("\n🧠 Hasil Prediksi Sample Input:")
+            print(f"Prediksi: {result['prediction']} (0=Sehat, 1=Penyakit Jantung)")
+            print(f"Probabilitas: {result['probability']:.4f}")
+            print(f"Tingkat Risiko: {result['risk_level']}")
+
+            # Coba tampilkan metrik keseluruhan
+            metrics = joblib.load(os.path.join(stacking_model.model_dir, 'all_models_metrics.pkl'))
+            print("\n📊 Ringkasan Evaluasi Model:")
+            for model_name, met in metrics.items():
+                print(f"\n📌 {model_name}")
+                for k, v in met.items():
+                    print(f"{k.capitalize()}: {v:.4f}")
+
+            print(f"\n📁 Visualisasi hasil disimpan di folder: {os.path.join(stacking_model.model_dir, 'visualizations')}")
+
         except Exception as e:
-            print(f"Could not load metrics: {str(e)}")
-    
-    except Exception as e:
-        print(f"Error during training: {str(e)}")
-        import traceback
-        traceback.print_exc()
+            print(f"\n❗ Terjadi kesalahan saat pelatihan atau evaluasi: {str(e)}")
+            import traceback
+            traceback.print_exc()

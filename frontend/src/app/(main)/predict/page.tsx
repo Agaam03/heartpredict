@@ -1,6 +1,5 @@
-import { GridBackground } from "@/components/GridBackground";
+import MultiStepQuestions from "@/components/PredictPage/MultiStepQuestions";
 import React from "react";
-import MultiStepQuestions from "./MultiStepQuestions";
 
 const Page = () => {
   return <MultiStepQuestions />;

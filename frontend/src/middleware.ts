@@ -2,9 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import NextAuth from "next-auth"
 import authConfig from "./auth.config"
 import { apiAuthPrefix, authRoutes, DEFAULT_LOGIN_REDIRECT, predictRoutes, publicRoutes } from "./routes";
- 
-export const { auth } = NextAuth(authConfig)
 
+export const { auth } = NextAuth(authConfig)
 export default auth((req: NextRequest & { auth?: any }) => {
     const { nextUrl } = req;
     const isLoggedIn = !!req.auth;

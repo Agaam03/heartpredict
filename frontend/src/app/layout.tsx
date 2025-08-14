@@ -38,12 +38,12 @@ export const metadata: Metadata = {
       "An intelligent health prediction system using ensemble machine learning models (RF, FFNN, XGBoost). Receive accurate predictions and AI-driven prevention suggestions.",
     url: "https://heartpredict-two.vercel.app",
     siteName: "Heart Disease Predictor",
-    locale: "en_US",
+    locale: "en",
     type: "website",
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;

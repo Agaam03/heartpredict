@@ -1,0 +1,28 @@
+{
+  "Hero": {
+    "heading": "Check. Test. Predict.",
+    "subheading": "AI-powered heart disease prediction using advanced machine learning algorithms.",
+    "description": "Harness the power of Random Forest and Neural Networks for fast, accurate predictions.",
+    "tryAnalysis": "Try Analysis",
+    "supported": "Supported on Windows, Linux, and macOS",
+    "buildWith": "Build it with",
+    "card": {
+      "web": {
+        "title": "Web Analysis",
+        "description": "Build web-based health prediction tools for hospitals and individuals."
+      },
+      "mobile": {
+        "title": "Mobile Health",
+        "description": "Use a single model to build native health apps for iOS and Android."
+      },
+      "cloud": {
+        "title": "Cloud",
+        "description": "Build scalable, cloud-native health apps on all major providers."
+      },
+      "ai": {
+        "title": "AI & ML",
+        "description": "Build smart apps with TensorFlow, PyTorch, and Azure ML."
+      }
+    }
+  }
+}

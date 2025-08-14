@@ -1,4 +1,3 @@
-import { GridBackground } from "@/components/GridBackground";
 import LoginForm from "@/components/AuthForm/LoginForm";
 import React from "react";
 

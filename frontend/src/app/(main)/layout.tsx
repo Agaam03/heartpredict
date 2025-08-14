@@ -10,6 +10,7 @@ export default async function MainLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
+
   return (
     <>
       <SessionProvider session={session}>

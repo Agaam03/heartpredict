@@ -145,8 +145,7 @@ const Footer = () => {
               <div className="flex items-start space-x-3">
                 <MapPin className="text-red-400 mt-1 flex-shrink-0" size={18} />
                 <div className="text-gray-400 text-sm">
-                  <p>East Java, Indonesia</p>
-                  <p>Universitas Muhammadiyah Lamongan</p>
+                  <p>Indonesia</p>
                   <p className="font-medium text-white mt-1">
                     M. Cita Prasetya Agam
                   </p>
@@ -172,6 +171,7 @@ const Footer = () => {
                   +62-8993787093
                 </a>
               </div>
+              {/* <LanguageSwitcher /> */}
             </div>
           </div>
 

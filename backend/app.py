@@ -211,8 +211,6 @@ def predict(input_data: HeartDiseaseInput):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-    from pydantic import BaseModel
-
 class ChatRequest(BaseModel):
     predictionResultId: str
     userMessage: str

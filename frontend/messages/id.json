@@ -1,0 +1,28 @@
+{
+  "Hero": {
+    "heading": "Periksa. Tes. Prediksi.",
+    "subheading": "Prediksi penyakit jantung berbasis AI menggunakan algoritma machine learning canggih.",
+    "description": "Manfaatkan kekuatan Random Forest dan Neural Network untuk hasil cepat dan akurat.",
+    "tryAnalysis": "Coba Analisis",
+    "supported": "Didukung pada Windows, Linux, dan macOS",
+    "buildWith": "Bangun dengan",
+    "card": {
+      "web": {
+        "title": "Analisis Web",
+        "description": "Buat alat prediksi kesehatan berbasis web untuk rumah sakit dan individu."
+      },
+      "mobile": {
+        "title": "Kesehatan Mobile",
+        "description": "Gunakan satu model untuk membangun aplikasi kesehatan iOS dan Android."
+      },
+      "cloud": {
+        "title": "Cloud",
+        "description": "Bangun aplikasi kesehatan cloud-native yang scalable."
+      },
+      "ai": {
+        "title": "AI & ML",
+        "description": "Bangun aplikasi pintar dengan TensorFlow, PyTorch, dan Azure ML."
+      }
+    }
+  }
+}

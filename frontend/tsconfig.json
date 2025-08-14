@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/lib/local-storage.ts"
-  ],
+, "next.config.ts"  ],
   "exclude": [
     "node_modules"
   ]
