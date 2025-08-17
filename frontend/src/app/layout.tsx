@@ -36,23 +36,6 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Agaam" }],
   creator: "M. Cita Prasetya Agam",
-  openGraph: {
-    title: "Heart Disease Risk Prediction",
-    description:
-      "A web-based application for heart disease risk prediction using an ensemble learning model combining Random Forest, Feedforward Neural Network (FFNN), and XGBoost. Provides accurate predictions and AI-generated recommendations.",
-    url: process.env.NEXT_PUBLIC_APP_URL,
-    siteName: "Heart Disease Risk Prediction",
-    images: [
-      {
-        url: `${process.env.NEXT_PUBLIC_APP_URL}/opengraph-image.png`,
-        width: 1200,
-        height: 630,
-        alt: "Heart Disease Risk Prediction",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
 };
 
 export default async function RootLayout({

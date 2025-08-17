@@ -25,15 +25,15 @@ const HeroSection = () => {
         "Anda sudah memiliki lebih dari 5 prediksi silahkan hapus terlebih dahulu",
         {
           style: {
-            border: "1px solid #f6339a", // garis merah
+            border: "1px solid #f6339a",
             padding: "16px",
-            color: "#f6339a", // teks merah terang
-            background: "#000000", // hitam gelap
-            minWidth: "400px", // biar lebih lebar
+            color: "#f6339a",
+            background: "#000000",
+            minWidth: window.innerWidth < 480 ? "250px" : "400px", // lebih kecil kalau mobile
           },
           iconTheme: {
-            primary: "#f6339a", // ikon merah
-            secondary: "#0d0d0d", // latar ikon hitam gelap
+            primary: "#f6339a",
+            secondary: "#0d0d0d",
           },
         }
       );
