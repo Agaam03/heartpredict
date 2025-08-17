@@ -36,6 +36,10 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Agaam" }],
   creator: "M. Cita Prasetya Agam",
+  metadataBase: new URL("https://www.heartpredict.online"),
+  openGraph: {
+    images: ["opengraph-image.png"],
+  },
 };
 
 export default async function RootLayout({
