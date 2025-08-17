@@ -11,9 +11,34 @@ import {
   Brain,
 } from "lucide-react";
 import SpotlightButton from "../SpotlightButton";
-
+import { fetchPredictionResults } from "@/actions/fetch-prediction-result";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 const HeroSection = () => {
-  const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
+  const notAllowed = async () => {
+    const dataPrediction = await fetchPredictionResults();
+    if (dataPrediction.length < 5) {
+      router.push("/predict");
+    } else {
+      toast.error(
+        "Anda sudah memiliki lebih dari 5 prediksi silahkan hapus terlebih dahulu",
+        {
+          style: {
+            border: "1px solid #f6339a", // garis merah
+            padding: "16px",
+            color: "#f6339a", // teks merah terang
+            background: "#000000", // hitam gelap
+            minWidth: "400px", // biar lebih lebar
+          },
+          iconTheme: {
+            primary: "#f6339a", // ikon merah
+            secondary: "#0d0d0d", // latar ikon hitam gelap
+          },
+        }
+      );
+    }
+  };
 
   return (
     <section className="relative flex w-full items-center justify-center overflow-hidden    ">
@@ -80,7 +105,9 @@ const HeroSection = () => {
                     "pointer-events-none absolute left-[50%] top-[50%] h-10 w-10 -translate-x-[50%] -translate-y-[50%] rounded-full bg-fuchsia-800/10",
                 }}
                 href="/predict"
+                onClick={notAllowed}
               />
+              <Toaster position="bottom-center" reverseOrder={false} />
             </div>
 
             {/* Stats */}

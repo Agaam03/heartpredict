@@ -146,7 +146,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "https://heartpredict-two.vercel.app",
-        "https://heartpredict.online"
+        "https://www.heartpredict.online"
     ],
     allow_credentials=True,
     allow_methods=["*"],

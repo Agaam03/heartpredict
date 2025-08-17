@@ -17,6 +17,13 @@ export const metadata: Metadata = {
     "A web-based application for heart disease risk prediction using an ensemble learning model combining Random Forest, Feedforward Neural Network (FFNN), and XGBoost. Provides accurate predictions and AI-generated recommendations.",
   keywords: [
     "Heart Disease Prediction",
+    "prediksi penyakit jantung",
+    "Ensemble Learning",
+    "prediksi",
+    "Feedforward Neural Network",
+    "XGBoost",
+    "AI Recommendations",
+    "Health Tech",
     "Machine Learning",
     "Random Forest",
     "FFNN",
@@ -29,16 +36,21 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Agaam" }],
   creator: "M. Cita Prasetya Agam",
-  robots: "index, follow",
-  applicationName: "Heart Disease Risk Predictor",
-  generator: "Next.js",
   openGraph: {
     title: "Heart Disease Risk Prediction",
     description:
-      "An intelligent health prediction system using ensemble machine learning models (RF, FFNN, XGBoost). Receive accurate predictions and AI-driven prevention suggestions.",
-    url: "https://heartpredict-two.vercel.app",
-    siteName: "Heart Disease Predictor",
-    locale: "en",
+      "A web-based application for heart disease risk prediction using an ensemble learning model combining Random Forest, Feedforward Neural Network (FFNN), and XGBoost. Provides accurate predictions and AI-generated recommendations.",
+    url: process.env.NEXT_PUBLIC_APP_URL,
+    siteName: "Heart Disease Risk Prediction",
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/opengraph-image.png`,
+        width: 1200,
+        height: 630,
+        alt: "Heart Disease Risk Prediction",
+      },
+    ],
+    locale: "en_US",
     type: "website",
   },
 };

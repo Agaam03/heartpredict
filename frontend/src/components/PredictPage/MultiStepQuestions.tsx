@@ -238,21 +238,24 @@ const MultiStepQuestions = () => {
       <div className="max-w-7xl mx-auto px-6 ">
         <div className="bg-slate-800/40 backdrop-blur-lg border border-slate-700/50 rounded-2xl p-8 lg:p-12 shadow-2xl">
           {/* Question Header */}
-          <div className="flex items-start gap-4 mb-8">
-            <div className="p-3 bg-slate-700/50 rounded-xl border border-slate-600/50">
-              {getQuestionIcon(question.type)}
-            </div>
-            <div className="flex-1">
+          <div className="">
+            <div className="flex items-center gap-4 mb-2">
+              <div className="p-3 bg-slate-700/50 rounded-xl border border-slate-600/50">
+                {getQuestionIcon(question.type)}
+              </div>
               <div className="flex items-center gap-3 mb-2">
-                <span className="bg-pink-500/20 text-pink-400 px-3 py-1 rounded-full text-sm font-medium border border-pink-500/30">
+                <span className="bg-pink-500/20 text-pink-400 px-5 py-1.5 rounded-xl text-sm font-medium border border-pink-500/30">
                   Question {currentStep + 1}
                 </span>
                 <ArrowRight className="w-4 h-4 text-gray-400" />
               </div>
+            </div>
+
+            <div className="flex-1">
               <h2 className="text-2xl lg:text-3xl font-bold text-white leading-tight">
                 {question.question}
               </h2>
-              <p className="text-gray-400 mt-2 text-lg">
+              <p className="text-gray-400 mt-2 text-lg mb-1">
                 Silakan pilih jawaban yang paling sesuai dengan kondisi Anda
               </p>
             </div>
