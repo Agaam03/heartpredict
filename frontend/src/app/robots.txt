@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /private/
+Disallow: /error
+Disallow: /new-password
+Disallow: /new-verification
+Disallow: /reset
+Disallow: /_next/
+Disallow: *.json
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+Sitemap: https://www.heartpredict.online/sitemap.xml
+Host: https://www.heartpredict.online
