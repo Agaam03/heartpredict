@@ -59,21 +59,12 @@ export const metadata: Metadata = {
         alt: "Heart Disease Risk Prediction - AI-Powered Health Assessment",
         type: "image/png",
       },
-      {
-        url: "/opengraph-image-square.png", // Optional: square version for some platforms
-        width: 600,
-        height: 600,
-        alt: "Heart Disease Risk Prediction Logo",
-        type: "image/png",
-      },
     ],
   },
 
   // Twitter Card Configuration
   twitter: {
     card: "summary_large_image",
-    site: "@heartpredict", // Ganti dengan Twitter handle jika ada
-    creator: "@agaam", // Ganti dengan Twitter handle creator
     title: "Heart Disease Risk Prediction - AI-Powered Health Assessment",
     description:
       "Advanced heart disease risk prediction using ensemble learning. Get accurate predictions and personalized AI recommendations.",
@@ -117,24 +108,15 @@ export default async function RootLayout({
   return (
     <html lang="en" className="bg-black" suppressHydrationWarning>
       <head>
-        {/* Favicon and App Icons */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
+        <meta property="og:image" content="<generated>" />
+        <meta property="og:image:type" content="<generated>" />
+        <meta property="og:image:width" content="<generated>" />
+        <meta property="og:image:height" content="<generated>" />
 
-        {/* Additional Meta Tags */}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <meta name="msapplication-TileColor" content="#000000" />
-
-        {/* Preconnect for performance */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
+        <meta name="twitter:image" content="<generated>" />
+        <meta name="twitter:image:type" content="<generated>" />
+        <meta name="twitter:image:width" content="<generated>" />
+        <meta name="twitter:image:height" content="<generated>" />
       </head>
       <body className={`${geist.className}`}>
         {children}
