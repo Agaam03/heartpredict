@@ -23,8 +23,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchPredictionResultsById } from "@/actions/fetch-prediction-result";
 import { PredictionById } from "@/types/prediction";
-import Link from "next/link";
 import DownloadButton from "./DownloadButton";
+import { navigateWithLimit } from "@/lib/navigate-with-limit";
+import { Toaster } from "react-hot-toast";
 
 const ResultPage = ({ id }: { id: string }) => {
   if (!id) return null;
@@ -48,7 +49,11 @@ const ResultPage = ({ id }: { id: string }) => {
     getData();
   }, [id, router]);
 
-  console.log(result);
+  const handleClick = async () => {
+    await navigateWithLimit("/predict", router);
+  };
+
+  // console.log(result);
   const mainProbability = result
     ? (result.stackingPrediction * 100).toFixed(1)
     : "0.0";
@@ -418,13 +423,14 @@ const ResultPage = ({ id }: { id: string }) => {
             Share Results
           </button> */}
 
-          <Link
-            href={"/predict"}
+          <button
+            onClick={handleClick}
             className="flex items-center gap-2 bg-slate-700/50 hover:bg-slate-600/50 border border-slate-600/50 hover:border-slate-500/50 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 xl:w-64 w-full justify-center"
           >
             <Activity className="w-5 h-5" />
             New Assessment
-          </Link>
+          </button>
+          <Toaster position="bottom-center" reverseOrder={false} />
         </motion.div>
 
         {/* Disclaimer */}

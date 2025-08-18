@@ -11,35 +11,8 @@ import {
   Brain,
 } from "lucide-react";
 import SpotlightButton from "../SpotlightButton";
-import { fetchPredictionResults } from "@/actions/fetch-prediction-result";
-import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 const HeroSection = () => {
-  const router = useRouter();
-  const notAllowed = async () => {
-    const dataPrediction = await fetchPredictionResults();
-    if (dataPrediction.length < 5) {
-      router.push("/predict");
-    } else {
-      toast.error(
-        "Anda sudah memiliki lebih dari 5 prediksi silahkan hapus terlebih dahulu",
-        {
-          style: {
-            border: "1px solid #f6339a",
-            padding: "16px",
-            color: "#f6339a",
-            background: "#000000",
-            minWidth: window.innerWidth < 480 ? "250px" : "400px", // lebih kecil kalau mobile
-          },
-          iconTheme: {
-            primary: "#f6339a",
-            secondary: "#0d0d0d",
-          },
-        }
-      );
-    }
-  };
-
   return (
     <section className="relative flex w-full items-center justify-center overflow-hidden    ">
       {/* Keep the diagonal background */}
@@ -83,12 +56,12 @@ const HeroSection = () => {
                 Check. Test. Predict.
               </h1>
               <p className="text-xl text-gray-300 max-w-lg leading-relaxed">
-                AI-powered heart disease prediction using advanced machine
-                learning algorithms for accurate, instant health analysis.
+                Prediksi penyakit jantung berbasis AI dengan algoritma machine
+                learning untuk analisis kesehatan yang cepat dan akurat.
               </p>
               <p className="text-sm text-gray-400 max-w-lg">
-                Harness the power of Random Forest and Feedforward Neural
-                Networks to deliver accurate, rapid predictions.
+                Didukung oleh Ensemble model Random Forest, Neural Network dan
+                XGBoost untuk hasil prediksi yang lebih tepat dan instan.
               </p>
             </div>
 
@@ -105,14 +78,13 @@ const HeroSection = () => {
                     "pointer-events-none absolute left-[50%] top-[50%] h-10 w-10 -translate-x-[50%] -translate-y-[50%] rounded-full bg-fuchsia-800/10",
                 }}
                 href="/predict"
-                onClick={notAllowed}
               />
               <Toaster position="bottom-center" reverseOrder={false} />
             </div>
 
             {/* Stats */}
             <div className="text-sm text-gray-400">
-              <span>Supported on Windows, Linux, and macOS</span>
+              <span>Powered by DeepSeek AI</span>
             </div>
           </div>
 

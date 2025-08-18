@@ -1,10 +1,13 @@
 "use client";
+
+import { fetchPredictionResults } from "@/actions/fetch-prediction-result";
+import { navigateWithLimit } from "@/lib/navigate-with-limit";
 import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
-
+import { toast } from "react-hot-toast";
 interface SpotlightButtonProps {
   main: string;
   styleDefault?: boolean;
@@ -26,7 +29,7 @@ const SpotlightButton = ({
   download = false,
   onClick,
   href = "/predict",
-  icon = <ExternalLink size={18} />, // Default icon
+  icon = <ExternalLink size={18} />,
 }: SpotlightButtonProps) => {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const spanRef = useRef<HTMLSpanElement | null>(null);
@@ -57,19 +60,24 @@ const SpotlightButton = ({
     };
   }, []);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (onClick) {
       onClick();
-    } else if (download) {
+      return;
+    }
+
+    if (download) {
       const a = document.createElement("a");
       a.href = process.env.NEXT_PUBLIC_DOWNLOAD_DATASET_URL || "";
       a.download = "heart-dataset-by-kirollosashraf";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-    } else {
-      router.push(href);
+      return;
     }
+
+    // ✅ cukup panggil helper
+    await navigateWithLimit(href, router);
   };
 
   // Default styles
@@ -82,35 +90,25 @@ const SpotlightButton = ({
   const defaultSpotlightStyles =
     "pointer-events-none absolute left-[50%] top-[50%] h-24 w-24 -translate-x-[50%] -translate-y-[50%] rounded-full bg-fuchsia-800/10";
 
-  // Apply styles based on styleDefault prop
-  const buttonClassName = styleDefault
-    ? defaultButtonStyles
-    : customStyles?.button ||
-      "relative w-full overflow-hidden px-4 py-2 cursor-pointer";
-
-  const textClassName = styleDefault
-    ? defaultTextStyles
-    : customStyles?.text ||
-      "pointer-events-none relative z-10 flex items-center justify-center gap-2";
-
-  const spotlightClassName = styleDefault
-    ? defaultSpotlightStyles
-    : customStyles?.spotlight ||
-      "pointer-events-none absolute left-[50%] top-[50%] h-16 w-16 -translate-x-[50%] -translate-y-[50%] rounded-full bg-blue-500/20";
-
   return (
     <motion.button
       onClick={handleClick}
       whileTap={{ scale: 0.985 }}
       ref={btnRef}
-      className={buttonClassName}
+      className={styleDefault ? defaultButtonStyles : customStyles?.button}
     >
-      <span className={textClassName}>
+      <span className={styleDefault ? defaultTextStyles : customStyles?.text}>
         {main}
         {icon}
       </span>
-      <span ref={spanRef} className={spotlightClassName} />
+      <span
+        ref={spanRef}
+        className={
+          styleDefault ? defaultSpotlightStyles : customStyles?.spotlight
+        }
+      />
     </motion.button>
   );
 };
+
 export default dynamic(() => Promise.resolve(SpotlightButton), { ssr: false });

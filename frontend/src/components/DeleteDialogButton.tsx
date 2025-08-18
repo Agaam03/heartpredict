@@ -47,7 +47,7 @@ export const DeleteDialogButton = ({
           )}
         </button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="bg-black text-white border border-slate-600 rounded-lg shadow-lg ">
+      <AlertDialogContent className="bg-black text-pink-400 border border-pink-400 rounded-lg shadow-lg ">
         <AlertDialogHeader>
           <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
           <AlertDialogDescription>
@@ -56,7 +56,7 @@ export const DeleteDialogButton = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="border border-slate-600 rounded-lg shadow-lg cursor-pointer">
+          <AlertDialogCancel className="border border-pink-400 rounded-lg shadow-lg cursor-pointer">
             Batal
           </AlertDialogCancel>
           <AlertDialogAction
