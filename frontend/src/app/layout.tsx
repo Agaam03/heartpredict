@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Oswald, Space_Grotesk } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -12,7 +12,10 @@ const geist = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Heart Disease Risk Prediction",
+  title: {
+    default: "Heart Disease Risk Prediction",
+    template: "%s | Heart Disease Risk Prediction",
+  },
   description:
     "A web-based application for heart disease risk prediction using an ensemble learning model combining Random Forest, Feedforward Neural Network (FFNN), and XGBoost. Provides accurate predictions and AI-generated recommendations.",
   keywords: [
@@ -36,9 +39,73 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Agaam" }],
   creator: "M. Cita Prasetya Agam",
+  publisher: "M. Cita Prasetya Agam",
   metadataBase: new URL("https://www.heartpredict.online"),
+
+  // Open Graph Configuration
   openGraph: {
-    images: ["opengraph-image.png"],
+    type: "website",
+    locale: "en_US",
+    url: "https://www.heartpredict.online",
+    siteName: "Heart Disease Risk Prediction",
+    title: "Heart Disease Risk Prediction - AI-Powered Health Assessment",
+    description:
+      "Advanced heart disease risk prediction using ensemble learning. Get accurate predictions and personalized AI recommendations for better heart health.",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Heart Disease Risk Prediction - AI-Powered Health Assessment",
+        type: "image/png",
+      },
+      {
+        url: "/opengraph-image-square.png", // Optional: square version for some platforms
+        width: 600,
+        height: 600,
+        alt: "Heart Disease Risk Prediction Logo",
+        type: "image/png",
+      },
+    ],
+  },
+
+  // Twitter Card Configuration
+  twitter: {
+    card: "summary_large_image",
+    site: "@heartpredict", // Ganti dengan Twitter handle jika ada
+    creator: "@agaam", // Ganti dengan Twitter handle creator
+    title: "Heart Disease Risk Prediction - AI-Powered Health Assessment",
+    description:
+      "Advanced heart disease risk prediction using ensemble learning. Get accurate predictions and personalized AI recommendations.",
+    images: ["/opengraph-image.png"],
+  },
+
+  // Additional Meta Tags
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  // Canonical URL
+  alternates: {
+    canonical: "https://www.heartpredict.online",
+  },
+
+  // Application Information
+  applicationName: "Heart Disease Risk Prediction",
+  category: "Health & Medical",
+
+  // Additional metadata
+  other: {
+    "msapplication-TileColor": "#000000",
+    "theme-color": "#000000",
   },
 };
 
@@ -49,6 +116,26 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" className="bg-black" suppressHydrationWarning>
+      <head>
+        {/* Favicon and App Icons */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
+
+        {/* Additional Meta Tags */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="msapplication-TileColor" content="#000000" />
+
+        {/* Preconnect for performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
+      </head>
       <body className={`${geist.className}`}>
         {children}
         <SpeedInsights />
