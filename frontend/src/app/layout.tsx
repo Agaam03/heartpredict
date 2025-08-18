@@ -30,8 +30,6 @@ export const metadata: Metadata = {
     "Machine Learning",
     "Random Forest",
     "FFNN",
-    "XGBoost",
-    "Ensemble Learning",
     "AI Healthcare",
     "Medical Prediction",
     "Next.js",
@@ -95,7 +93,6 @@ export const metadata: Metadata = {
 
   // Additional metadata
   other: {
-    "msapplication-TileColor": "#000000",
     "theme-color": "#000000",
   },
 };
@@ -108,15 +105,20 @@ export default async function RootLayout({
   return (
     <html lang="en" className="bg-black" suppressHydrationWarning>
       <head>
-        <meta property="og:image" content="<generated>" />
-        <meta property="og:image:type" content="<generated>" />
-        <meta property="og:image:width" content="<generated>" />
-        <meta property="og:image:height" content="<generated>" />
+        {/* Favicon */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
 
-        <meta name="twitter:image" content="<generated>" />
-        <meta name="twitter:image:type" content="<generated>" />
-        <meta name="twitter:image:width" content="<generated>" />
-        <meta name="twitter:image:height" content="<generated>" />
+        {/* Basic Meta Tags */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#000000" />
+
+        {/* Preconnect for performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
       </head>
       <body className={`${geist.className}`}>
         {children}
