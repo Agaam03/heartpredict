@@ -1,5 +1,5 @@
 export const publicRoutes = [
-    "/", "/new-verification","/opengraph-image.png"
+    "/", "/new-verification"
 ]
 export const authRoutes = ["/login", "/register",'/error','/reset','/new-password']
 export const protectedRoutes = [
