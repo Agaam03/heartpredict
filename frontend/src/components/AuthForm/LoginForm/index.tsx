@@ -77,7 +77,7 @@ const LoginForm = () => {
   return (
     <>
       {/* Header */}
-      <div className="fixed top-0 left-0 w-full z-50 bg-transparent flex justify-between items-center px-14 pt-3 pb-1">
+      <div className="fixed top-0 left-0 w-full z-50 bg-transparent flex justify-between items-center lg:px-14  px-9 pt-3 pb-1">
         <Logo />
         <Link
           href="/register"

@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import ClearHeartResultOnNavigate from "@/components/ClearHeartResultOnNavigate";
+import BlockPredictIfLimitReached from "@/components/BlockPredictIfLimitReached";
 
 export default async function MainLayout({
   children,
@@ -14,6 +15,7 @@ export default async function MainLayout({
   return (
     <>
       <SessionProvider session={session}>
+        <BlockPredictIfLimitReached />
         <ClearHeartResultOnNavigate />
         <Navbar />
         {children}
