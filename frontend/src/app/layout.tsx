@@ -51,7 +51,7 @@ export const metadata: Metadata = {
       "Advanced heart disease risk prediction using ensemble learning. Get accurate predictions and personalized AI recommendations for better heart health.",
     images: [
       {
-        url: "/opengraph-image.png",
+        url: "https://www.heartpredict.online/opengraph-image.png",
         width: 1200,
         height: 630,
         alt: "Heart Disease Risk Prediction - AI-Powered Health Assessment",
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     title: "Heart Disease Risk Prediction - AI-Powered Health Assessment",
     description:
       "Advanced heart disease risk prediction using ensemble learning. Get accurate predictions and personalized AI recommendations.",
-    images: ["/opengraph-image.png"],
+    images: ["https://www.heartpredict.online/opengraph-image.png"],
   },
 
   // Robots
