@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   publisher: "M. Cita Prasetya Agam",
   metadataBase: new URL("https://www.heartpredict.online"),
 
-  // Open Graph Configuration
+  // Open Graph
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     ],
   },
 
-  // Twitter Card Configuration
+  // Twitter
   twitter: {
     card: "summary_large_image",
     title: "Heart Disease Risk Prediction - AI-Powered Health Assessment",
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     images: ["/opengraph-image.png"],
   },
 
-  // Additional Meta Tags
+  // Robots
   robots: {
     index: true,
     follow: true,
@@ -87,17 +87,37 @@ export const metadata: Metadata = {
     canonical: "https://www.heartpredict.online",
   },
 
-  // Application Information
+  // App info
   applicationName: "Heart Disease Risk Prediction",
   category: "Health & Medical",
 
-  // Additional metadata
+  // Favicon & App Icons
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      {
+        url: "/web-app-manifest-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        url: "/web-app-manifest-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
+    ],
+    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
+  },
+
+  // Theme color
   other: {
     "theme-color": "#000000",
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -105,19 +125,28 @@ export default async function RootLayout({
   return (
     <html lang="en" className="bg-black" suppressHydrationWarning>
       <head>
-        {/* Favicon */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        {/* Manifest for PWA */}
+        <link rel="manifest" href="/site.webmanifest" />
 
-        {/* Basic Meta Tags */}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-
-        {/* Preconnect for performance */}
+        {/* Performance preconnect */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin=""
+        />
+
+        {/* Structured data for Organization logo */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              url: "https://www.heartpredict.online",
+              logo: "https://www.heartpredict.online/favicon.ico",
+            }),
+          }}
         />
       </head>
       <body className={`${geist.className}`}>
