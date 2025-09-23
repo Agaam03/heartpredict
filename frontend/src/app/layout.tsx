@@ -148,6 +148,13 @@ export default function RootLayout({
             }),
           }}
         />
+
+        <script
+          src="https://fpyf8.com/88/tag.min.js"
+          data-zone="173297"
+          async
+          data-cfasync="false"
+        ></script>
       </head>
       <body className={`${geist.className}`}>
         {children}
