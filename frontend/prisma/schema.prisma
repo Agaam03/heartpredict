@@ -12,6 +12,9 @@ enum UserRole {
   USER
 }
 
+
+// ============= AUTH SCHEMA =============
+
 model User {
   id                    String                 @id @default(cuid()) @map("_id")
   name                  String?
@@ -83,6 +86,9 @@ model TwoFactorConfirmation {
 
   @@unique([userId])
 }
+
+
+// ============= MAIN FEATURE SCHEMA =============
 
 model PredictionResult {
   id     String @id @default(cuid()) @map("_id")
