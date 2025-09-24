@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Script from "next/script";
 
 const geist = Space_Grotesk({
   subsets: ["latin"],
@@ -147,6 +148,13 @@ export default function RootLayout({
               logo: "https://www.heartpredict.online/favicon.ico",
             }),
           }}
+        />
+        {/* AdSense Script */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7243017697676726"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
         />
         <meta name="google-adsense-account" content="ca-pub-7243017697676726" />
       </head>
