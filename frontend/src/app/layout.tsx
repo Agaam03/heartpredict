@@ -149,14 +149,6 @@ export default function RootLayout({
             }),
           }}
         />
-
-        {/* Inject Monetag script properly */}
-        <Script id="monetag-script" strategy="afterInteractive">
-          {`(function(s){
-              s.dataset.zone='9923083';
-              s.src='https://groleegni.net/vignette.min.js';
-          })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));`}
-        </Script>
       </head>
       <body className={`${geist.className}`}>
         {children}
