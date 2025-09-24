@@ -454,6 +454,8 @@ const ResultPage = ({ id }: { id: string }) => {
             </p>
           </div>
         </motion.div>
+
+        
       </div>
     </div>
   );

@@ -149,12 +149,25 @@ export default function RootLayout({
           }}
         />
 
-        <script
+        {/* <script
           src="https://fpyf8.com/88/tag.min.js"
           data-zone="173297"
           async
           data-cfasync="false"
-        ></script>
+        ></script> */}
+        <script
+          type="text/javascript"
+          dangerouslySetInnerHTML={{
+            __html: `
+            (function() {
+              const s = document.createElement('script');
+              s.dataset.zone = "9923083";
+              s.src = "https://groleegni.net/vignette.min.js";
+              document.body.appendChild(s);
+            })();
+            `,
+          }}
+        />
       </head>
       <body className={`${geist.className}`}>
         {children}
