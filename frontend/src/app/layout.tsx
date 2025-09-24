@@ -148,6 +148,7 @@ export default function RootLayout({
             }),
           }}
         />
+        <meta name="google-adsense-account" content="ca-pub-7243017697676726" />
       </head>
       <body className={`${geist.className}`}>
         {children}
