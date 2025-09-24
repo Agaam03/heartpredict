@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Script from "next/script";
 
 const geist = Space_Grotesk({
   subsets: ["latin"],
@@ -149,25 +150,13 @@ export default function RootLayout({
           }}
         />
 
-        {/* <script
-          src="https://fpyf8.com/88/tag.min.js"
-          data-zone="173297"
-          async
-          data-cfasync="false"
-        ></script> */}
-        <script
-          type="text/javascript"
-          dangerouslySetInnerHTML={{
-            __html: `
-            (function() {
-              const s = document.createElement('script');
-              s.dataset.zone = "9923083";
-              s.src = "https://groleegni.net/vignette.min.js";
-              document.body.appendChild(s);
-            })();
-            `,
-          }}
-        />
+        {/* Inject Monetag script properly */}
+        <Script id="monetag-script" strategy="afterInteractive">
+          {`(function(s){
+              s.dataset.zone='9923083';
+              s.src='https://groleegni.net/vignette.min.js';
+          })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));`}
+        </Script>
       </head>
       <body className={`${geist.className}`}>
         {children}
