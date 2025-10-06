@@ -162,7 +162,7 @@ const Footer = () => {
                 </a>
               </div>
 
-              <div className="flex items-center space-x-3">
+              {/* <div className="flex items-center space-x-3">
                 <Phone className="text-red-400 flex-shrink-0" size={18} />
                 <a
                   href="tel:+????????? "
@@ -170,7 +170,7 @@ const Footer = () => {
                 >
                   +62-?????????? 
                 </a>
-              </div>
+              </div> */}
               {/* <LanguageSwitcher /> */}
             </div>
           </div>
