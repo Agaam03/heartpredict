@@ -239,6 +239,7 @@ export const ChatbotTab: React.FC<ChatbotTabProps> = ({
     };
 
     setChatMessages((prev) => [...prev, userMessage]);
+    setChatInput("");
     setIsTyping(true);
 
     try {
@@ -323,6 +324,7 @@ export const ChatbotTab: React.FC<ChatbotTabProps> = ({
           ) : (
             chatMessages.map((message) => (
               <div
+                ref={chatEndRef}
                 key={message.id}
                 className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
               >
