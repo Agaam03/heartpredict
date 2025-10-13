@@ -32,10 +32,8 @@ stacked_inputs = np.column_stack((rf_probs, ffnn_probs, xgb_probs))
 final_probs = meta_model.predict_proba(stacked_inputs)[:, 1]
 final_preds = (final_probs >= 0.5).astype(int)
 
-# === Tambahkan kolom ke DataFrame ===
 df.insert(0, 'prediction', final_preds)
 
-# Ubah 1 -> "Benar", 0 -> "Salah"
 correct_labels = np.where(final_preds == y_true, 'Benar', 'Salah')
 df.insert(1, 'correct', correct_labels)
 

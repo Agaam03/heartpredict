@@ -44,7 +44,7 @@ export const PredictionHistoryTab = ({
       alert("Gagal menghapus prediksi. Silakan coba lagi.");
     } finally {
       setIsDeleting(null);
-      setOpenDialogId(null); // Tutup dialog setelah selesai
+      setOpenDialogId(null); 
     }
   };
 

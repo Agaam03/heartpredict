@@ -140,7 +140,7 @@ class HeartDiseasePredictor:
 # === Inisialisasi FastAPI dan model ===
 app = FastAPI()
 load_dotenv()
-# Tambahkan ini:
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[

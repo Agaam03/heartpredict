@@ -223,7 +223,6 @@ class StackingHeartDiseaseModel:
 if __name__ == "__main__":
     stacking_model = StackingHeartDiseaseModel()
 
-    # Pastikan file heart_train.csv dan heart_test.csv tersedia
     if not os.path.exists("heart_train.csv") or not os.path.exists("heart_test.csv"):
         print(" File 'heart_train.csv' atau 'heart_test.csv' tidak ditemukan.")
     else:
@@ -263,7 +262,6 @@ if __name__ == "__main__":
             print(f"Probabilitas: {result['probability']:.4f}")
             print(f"Tingkat Risiko: {result['risk_level']}")
 
-            # Coba tampilkan metrik keseluruhan
             metrics = joblib.load(os.path.join(stacking_model.model_dir, 'all_models_metrics.pkl'))
             print("\n Ringkasan Evaluasi Model:")
             for model_name, met in metrics.items():

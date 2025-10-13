@@ -12,7 +12,6 @@ export default auth((req: NextRequest & { auth?: any }) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
-  // ✅ Deteksi crawler bot
   const ua = req.headers.get("user-agent") || "";
   const isBot = /facebookexternalhit|twitterbot|linkedinbot|googlebot/i.test(ua);
 
@@ -25,7 +24,6 @@ export default auth((req: NextRequest & { auth?: any }) => {
     return NextResponse.next();
   }
 
-  // ✅ izinkan bot mengakses tanpa login
   if (isBot) {
     return NextResponse.next();
   }
