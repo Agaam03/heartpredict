@@ -2,12 +2,11 @@
 __pycache__/
 *.py[cod]
 myenv/
-backend/.png
 
 # Env files
 .env
 backend/.env
-backend/heart_disease_models
+backend/heart_disease_models/model
 
 # VSCode
 .vscode/

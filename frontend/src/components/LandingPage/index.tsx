@@ -84,7 +84,7 @@ const HeroSection = () => {
 
             {/* Stats */}
             <div className="text-sm text-gray-400">
-              <span>Powered by DeepSeek AI</span>
+              <span>Powered by Meta AI</span>
             </div>
           </div>
 
@@ -149,8 +149,7 @@ const HeroSection = () => {
                   <h3 className="text-white font-semibold">AI & ML</h3>
                 </div>
                 <p className="text-gray-300 text-sm leading-relaxed">
-                  Build smart health apps with TensorFlow, PyTorch, and Azure ML
-                  integration.
+                  Build smart health apps with TensorFlow, PyTorch.
                 </p>
               </div>
             </div>

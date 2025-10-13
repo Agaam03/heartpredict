@@ -225,12 +225,12 @@ if __name__ == "__main__":
 
     # Pastikan file heart_train.csv dan heart_test.csv tersedia
     if not os.path.exists("heart_train.csv") or not os.path.exists("heart_test.csv"):
-        print("❌ File 'heart_train.csv' atau 'heart_test.csv' tidak ditemukan.")
+        print(" File 'heart_train.csv' atau 'heart_test.csv' tidak ditemukan.")
     else:
         try:
-            print("🚀 Mulai pelatihan model dengan dataset yang sudah dipisah (train/test)...")
+            print(" Mulai pelatihan model dengan dataset yang sudah dipisah (train/test)...")
             predict_fn = stacking_model.train_and_save_models(visualize=True)
-            print("✅ Pelatihan model selesai!")
+            print(" Pelatihan model selesai!")
 
             # Contoh prediksi 1 data
             sample_input = {
@@ -258,20 +258,20 @@ if __name__ == "__main__":
             }
 
             result = predict_fn(sample_input, return_proba=True)
-            print("\n🧠 Hasil Prediksi Sample Input:")
+            print("\n Hasil Prediksi Sample Input:")
             print(f"Prediksi: {result['prediction']} (0=Sehat, 1=Penyakit Jantung)")
             print(f"Probabilitas: {result['probability']:.4f}")
             print(f"Tingkat Risiko: {result['risk_level']}")
 
             # Coba tampilkan metrik keseluruhan
             metrics = joblib.load(os.path.join(stacking_model.model_dir, 'all_models_metrics.pkl'))
-            print("\n📊 Ringkasan Evaluasi Model:")
+            print("\n Ringkasan Evaluasi Model:")
             for model_name, met in metrics.items():
-                print(f"\n📌 {model_name}")
+                print(f"\n {model_name}")
                 for k, v in met.items():
                     print(f"{k.capitalize()}: {v:.4f}")
 
-            print(f"\n📁 Visualisasi hasil disimpan di folder: {os.path.join(stacking_model.model_dir, 'visualizations')}")
+            print(f"\n Visualisasi hasil disimpan di folder: {os.path.join(stacking_model.model_dir, 'visualizations')}")
 
         except Exception as e:
             print(f"\n❗ Terjadi kesalahan saat pelatihan atau evaluasi: {str(e)}")

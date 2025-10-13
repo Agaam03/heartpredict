@@ -270,7 +270,10 @@ export const ChatbotTab: React.FC<ChatbotTabProps> = ({
   };
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    chatEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
   }, [chatMessages]);
 
   return (
@@ -289,7 +292,7 @@ export const ChatbotTab: React.FC<ChatbotTabProps> = ({
                   <Sparkles className="w-4 h-4 text-yellow-400" />
                 </h3>
                 <p className="text-sm text-gray-400">
-                  Powered by DeepSeek AI • Konsultasi hasil prediksi
+                  Powered by Llama 3.3 70B Meta • Konsultasi hasil prediksi
                 </p>
               </div>
             </div>

@@ -18,21 +18,21 @@ from datetime import datetime
 #     file_path = os.path.join(model_dir, filename)
     
 #     # URL for raw file download from Hugging Face
-#     url = f"https://huggingface.co/Agaam/heart-disease/resolve/main/heart_disease_models/{filename}"
+#     url = f"https://huggingface.co/Agaam/heart-disease/resolve/main/heart_disease_models/model/{filename}"
     
-#     print(f"📥 Downloading {filename}...")
+#     print(f"Downloading {filename}...")
 #     response = requests.get(url)
 #     if response.status_code == 200:
 #         with open(file_path, "wb") as f:
 #             f.write(response.content)
-#         print(f"✅ Successfully downloaded {filename}")
+#         print(f" Successfully downloaded {filename}")
 #         return True
 #     else:
-#         print(f"❌ Failed to download {filename}. Status code: {response.status_code}")
+#         print(f" Failed to download {filename}. Status code: {response.status_code}")
 #         return False
 
 class HeartDiseasePredictor:
-    def __init__(self, model_dir="heart_disease_models"):
+    def __init__(self, model_dir="heart_disease_models/model"):
         self.model_dir = model_dir
         self.risk_thresholds = {'low': 0.3, 'medium': 0.7}  # Default values
         self.required_files = [
@@ -164,7 +164,7 @@ prediction_collection = db["PredictionResult"]
 chat_collection = db["AIChat"]
 
 # Initialize model predictor
-model_predictor = HeartDiseasePredictor(model_dir='heart_disease_models')
+model_predictor = HeartDiseasePredictor(model_dir='heart_disease_models/model')
 
 # Definisi format input
 class HeartDiseaseInput(BaseModel):
@@ -254,7 +254,7 @@ async def chat_with_user(request: ChatRequest):
 
         **Hasil Prediksi**
         - Prediksi Akhir: {prediction['predictionLabel']}
-        - Probabilitas: {round(prediction['probability'] * 100, 2)}%
+        - Probabilitas / Hasil Stacking: {round(prediction['probability'] * 100, 2)}%
         - Confidence (Keyakinan Model): {round(prediction['confidence'] * 100, 2)}%
         - Tingkat Risiko: {prediction['riskLevel']}
 
@@ -265,19 +265,17 @@ async def chat_with_user(request: ChatRequest):
 
         *Pertanyaan Pengguna:**
         "{request.userMessage}"
-
-        Berdasarkan semua data di atas, berikan jawaban yang **jelas, personal, dan bersahabat**, termasuk saran lanjutan atau klarifikasi jika dibutuhkan.
         
         """
 
         chat_completion = groq_client.chat.completions.create(
-            model="deepseek-r1-distill-llama-70b",
+            # model="deepseek-r1-distill-llama-70b", sudah deprecated
+            model="llama-3.3-70b-versatile",
             messages=[
-                {"role": "system", "content": "Kamu adalah dokter spesialis jantung terpintar di dunia ini."},
+                {"role": "system", "content": "Kamu adalah dokter spesialis jantung terpintar di dunia ini. Jawab pertanyaan pengguna dengan singkat, padat, dan sesuai hasil yang diberikan."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7,
-            reasoning_format="hidden"
         )
 
         ai_response = chat_completion.choices[0].message.content
@@ -294,7 +292,7 @@ def get_chats_by_prediction_id(prediction_id: str = Query(..., alias="prediction
         chats = list(chat_collection.find({"predictionResultId": prediction_id}))
 
         for chat in chats:
-            chat["_id"] = str(chat["_id"])  # Ubah ObjectId jadi string
+            chat["_id"] = str(chat["_id"])   
 
         return {
             "predictionId": prediction_id,
@@ -310,7 +308,7 @@ def get_prediction_from_mongo(pred_id: str):
     if not prediction:
         raise HTTPException(status_code=404, detail="Prediction result not found.")
     
-    # Optional: konversi ObjectId ke string kalau perlu
+ 
     prediction["_id"] = str(prediction["_id"])
     return prediction
 
@@ -327,13 +325,13 @@ def get_prevention_advice(user_input, prediction_result):
     """
 
     chat_completion = groq_client.chat.completions.create(
-        model="deepseek-r1-distill-llama-70b",
+        # model="deepseek-r1-distill-llama-70b", sudah deprecated
+        model="llama-3.3-70b-versatile",
         messages=[
             {"role": "system", "content": "Kamu adalah dokter spesialis jantung terpintar di dunia ini."},
             {"role": "user", "content": prompt}
         ],
         temperature=0.7,
-        reasoning_format="hidden"
     )
 
     return chat_completion.choices[0].message.content
