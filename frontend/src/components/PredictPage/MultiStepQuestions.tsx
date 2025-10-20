@@ -151,7 +151,7 @@ const submitAnswers = async (value: number, prediction?: PredictionById) => {
     const timeout = setTimeout(() => controller.abort(), 9000); // timeout 9 detik
 
     const response = await fetch(
-      `${process.env.BACKEND_URL}/predict`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/predict`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

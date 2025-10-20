@@ -55,7 +55,7 @@ export const ChatbotTab: React.FC<ChatbotTabProps> = ({
     try {
       setIsLoading(true);
       const response = await fetch(
-        `${process.env.BACKEND_URL}/results?predictionId=${predictionId}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/results?predictionId=${predictionId}`
       );
       const data = await response.json();
 
