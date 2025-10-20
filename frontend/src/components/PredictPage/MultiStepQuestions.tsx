@@ -139,64 +139,66 @@ const MultiStepQuestions = () => {
     }
   };
 
-  const submitAnswers = async (value: number, prediction?: PredictionById) => {
-    const key = questions[currentStep].id;
-    const updated = { ...answers, [key]: value };
+const submitAnswers = async (value: number, prediction?: PredictionById) => {
+  const key = questions[currentStep].id;
+  const updated = { ...answers, [key]: value };
 
-    setAnswers(updated);
-    saveToLocalStorage("heartAnswers", updated);
-    console.log("Updated input:", updated);
+  setAnswers(updated);
+  saveToLocalStorage("heartAnswers", updated);
 
-    startTransition(async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/predict`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updated),
-          }
-        );
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 9000); // timeout 9 detik
 
-        if (!response.ok) {
-          throw new Error("Gagal prediksi: " + response.statusText);
-        }
-
-        const result = await response.json();
-        console.log("Hasil prediksi:", result);
-
-        localStorage.setItem("heartResult", JSON.stringify(result));
-
-        const payloadToSave = {
-          prediction: result.prediction,
-          predictionLabel: result.prediction_label,
-          probability: result.probability,
-          confidence: result.confidence,
-          riskLevel: result.risk_level,
-          advice: result.advice,
-          modelProbabilities: result.model_probabilities,
-          inputData: normalizeInput(updated),
-        };
-
-        await savePrediction(payloadToSave);
-
-        const rawData = await fetchPredictionResults();
-        const data: PredictionById[] = rawData.map((item: any) => ({
-          ...item,
-          patientName:
-            typeof item.patientName === "string"
-              ? item.patientName
-              : item.patientName?.name || "",
-        }));
-        console.log(data);
-        router.push(`/result/${data[0].id}`);
-        localStorage.removeItem("heartResult");
-        localStorage.removeItem("heartAnswers");
-      } catch (error) {
-        console.error("Gagal mengirim atau menyimpan:", error);
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/predict`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated),
+        signal: controller.signal,
       }
-    });
-  };
+    );
+    clearTimeout(timeout);
+
+    if (!response.ok) throw new Error("Gagal prediksi: " + response.statusText);
+
+    const result = await response.json();
+    console.log("Hasil prediksi:", result);
+
+    // Simpan hasil ke localStorage
+    localStorage.setItem("heartResult", JSON.stringify(result));
+
+    const payloadToSave = {
+      prediction: result.prediction,
+      predictionLabel: result.prediction_label,
+      probability: result.probability,
+      confidence: result.confidence,
+      riskLevel: result.risk_level,
+      advice: result.advice,
+      modelProbabilities: result.model_probabilities,
+      inputData: normalizeInput(updated),
+    };
+
+    await savePrediction(payloadToSave);
+
+    const rawData = await fetchPredictionResults();
+    const data: PredictionById[] = rawData.map((item: any) => ({
+      ...item,
+      patientName:
+        typeof item.patientName === "string"
+          ? item.patientName
+          : item.patientName?.name || "",
+    }));
+
+    router.push(`/result/${data[0].id}`);
+    localStorage.removeItem("heartResult");
+    localStorage.removeItem("heartAnswers");
+  } catch (error) {
+    console.error("Gagal mengirim atau menyimpan:", error);
+  }
+};
+
 
   return (
     <div className=" bg-black py-8 px-4">
