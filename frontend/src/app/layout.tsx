@@ -14,7 +14,7 @@ const geist = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: {
-    default: "Heart Disease Risk Prediction",
+    default: "Prediksi Penyakit Jantung Dengan Machine Learning",
     template: "%s | Heart Disease Risk Prediction",
   },
   description:
