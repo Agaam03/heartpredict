@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://www.heartpredict.online",
-    siteName: "Heart Disease Risk Prediction",
+    siteName: "Prediksi Penyakit Jantung Dengan Machine Learning",
     title: "Heart Disease Risk Prediction - AI-Powered Health Assessment",
     description:
       "Advanced heart disease risk prediction using ensemble learning. Get accurate predictions and personalized AI recommendations for better heart health.",
